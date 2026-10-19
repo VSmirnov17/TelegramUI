@@ -1,6 +1,6 @@
 'use client';
 
-import { AllHTMLAttributes, ElementType, forwardRef } from 'react';
+import { AllHTMLAttributes, ElementType, forwardRef, PointerEvent } from 'react';
 import styles from './Tappable.module.css';
 
 import { classNames } from 'helpers/classNames';
@@ -21,6 +21,8 @@ export const Tappable = forwardRef(({
   className,
   interactiveAnimation = 'background',
   readOnly,
+  onPointerCancel: onPointerCancelProp,
+  onPointerDown: onPointerDownProp,
   ...restProps
 }: TappableProps, ref) => {
   const platform = usePlatform();
@@ -36,8 +38,14 @@ export const Tappable = forwardRef(({
         interactiveAnimation === 'opacity' && styles['wrapper--opacity'],
         className,
       )}
-      onPointerCancel={onPointerCancel}
-      onPointerDown={onPointerDown}
+      onPointerCancel={(event: PointerEvent<HTMLElement>) => {
+        onPointerCancel(event);
+        onPointerCancelProp?.(event);
+      }}
+      onPointerDown={(event: PointerEvent<HTMLElement>) => {
+        onPointerDown(event);
+        onPointerDownProp?.(event);
+      }}
       readOnly={readOnly}
       {...restProps}
     >
