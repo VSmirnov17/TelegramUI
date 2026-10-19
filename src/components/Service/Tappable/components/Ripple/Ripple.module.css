@@ -2,6 +2,7 @@
   overflow: hidden;
   position: absolute;
   inset: 0;
+  pointer-events: none;
   border-radius: inherit;
   transition: background-color .15s ease-out;
 }

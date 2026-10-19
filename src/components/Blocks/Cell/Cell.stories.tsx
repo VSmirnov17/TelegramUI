@@ -38,3 +38,21 @@ export const CellWithInfo: Story = {
     after: <Info type="text" subtitle="Received">+1000</Info>,
   },
 };
+
+export const WithNativeDateInput: Story = {
+  args: {
+    children: <input type="date" aria-label="Date" />,
+  },
+  play: ({ canvasElement }) => {
+    const input = canvasElement.querySelector('input');
+    if (!input) {
+      throw new Error('The native date input must be rendered');
+    }
+
+    const { left, top, width, height } = input.getBoundingClientRect();
+    const target = input.ownerDocument.elementFromPoint(left + width / 2, top + height / 2);
+    if (!input.contains(target)) {
+      throw new Error('The native date input must receive pointer events without a ripple overlay intercepting them');
+    }
+  },
+};
