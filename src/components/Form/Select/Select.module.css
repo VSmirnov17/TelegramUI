@@ -2,6 +2,12 @@
   position: relative;
 }
 
+.title {
+  display: block;
+  padding: 16px 16px 8px;
+  color: var(--tgui--section_header_text_color);
+}
+
 .select {
   appearance: none;
 
