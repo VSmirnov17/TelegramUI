@@ -67,6 +67,25 @@ const App = () => (
 export default App;
 ```
 
+## Icons
+
+Import icons alongside components from the package root:
+
+```tsx
+import { Cell, Icon28Chat, Icon28Devices } from '@telegram-apps/telegram-ui';
+
+const Settings = () => (
+  <>
+    <Cell before={<Icon28Chat aria-hidden />}>Chat Settings</Cell>
+    <Cell before={<Icon28Devices aria-hidden />}>Data and Storage</Cell>
+  </>
+);
+```
+
+The number in each icon's name is its default size in pixels. Icons accept standard SVG props, including `width`, `height`, `className`, and `style`.
+Monochrome icons use `currentColor`; colored icons keep their own palette.
+Browse all available names and previews under **Icons → Catalog** in Storybook (`npm run dev`).
+
 ## 🤝 Contributing [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
 <a href="https://next.ossinsight.io/widgets/official/compose-recent-active-contributors?limit=30&repo_id=738096149" target="_blank" style="display: block" align="center">
