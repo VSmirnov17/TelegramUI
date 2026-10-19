@@ -2,6 +2,9 @@ import { create } from '@storybook/theming';
 import logo from './media/logo.png';
 
 import { addons } from '@storybook/manager-api';
+import { fitViewport } from './fitViewport';
+
+fitViewport();
 
 const favicon = document.querySelector('link[rel="icon"]');
 if (favicon) {

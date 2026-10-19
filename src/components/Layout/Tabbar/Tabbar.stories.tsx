@@ -14,6 +14,7 @@ const meta = {
   component: Tabbar,
   argTypes: hideControls('children'),
   parameters: {
+    layout: 'fullscreen',
     docs: {
       description: {
         component: 'A bottom navigation bar. Forward a ref to its root div to measure its full height, including bottom padding. Use ResizeObserver when that height can change.',
@@ -62,15 +63,15 @@ export const Playground: StoryObj<TabbarProps> = {
     );
   },
   decorators: [
-    (Story) => (
-      <div style={{ height: 100, transform: 'translateZ(0)', overflow: 'hidden' }}>
+    (Story, { viewMode }) => (
+      <div style={{ height: viewMode === 'docs' ? 100 : '100dvh', transform: 'translateZ(0)', overflow: 'hidden' }}>
         <Story />
       </div>
     ),
   ],
 };
 
-const MeasuredTabbar = () => {
+const MeasuredTabbar = ({ fullscreen }: { fullscreen: boolean }) => {
   const tabbarRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState(0);
@@ -91,7 +92,7 @@ const MeasuredTabbar = () => {
   }, []);
 
   return (
-    <div style={{ height: 520, transform: 'translateZ(0)', overflow: 'hidden', background: 'var(--tgui--secondary_bg_color)' }}>
+    <div style={{ height: fullscreen ? '100dvh' : 520, transform: 'translateZ(0)', overflow: 'hidden', background: 'var(--tgui--secondary_bg_color)' }}>
       <div ref={contentRef} style={{ height: '100%', overflowY: 'auto' }}>
         <List style={{ paddingBottom: height + 72 }}>
           <Section header="Navigation" footer="Toggle labels or switch Platform to change the panel height. The floating button stays 16px above it.">
@@ -137,7 +138,7 @@ const MeasuredTabbar = () => {
 };
 
 export const MeasuredHeight: StoryObj<TabbarProps> = {
-  render: () => <MeasuredTabbar />,
+  render: (_, { viewMode }) => <MeasuredTabbar fullscreen={viewMode !== 'docs'} />,
   parameters: {
     layout: 'fullscreen',
     docs: {

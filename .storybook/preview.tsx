@@ -1,3 +1,5 @@
+import './docs.css';
+
 import type { Preview } from '@storybook/react';
 import { AppearanceDecorator } from './decorators/appearance';
 import { AppRootDecorator } from './decorators/root';
@@ -17,7 +19,9 @@ const preview: Preview = {
           <Subtitle />
           <Description />
           <Primary />
-          <Controls />
+          <div role="region" aria-label="Component controls" tabIndex={0} style={{ maxWidth: '100%', overflowX: 'auto' }}>
+            <Controls />
+          </div>
           <Stories includePrimary={false} />
         </>
       ),

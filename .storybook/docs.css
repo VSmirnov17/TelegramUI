@@ -1,0 +1,6 @@
+/* Keep documentation tables scrollable without affecting component examples. */
+.sbdocs table:not(.docblock-argstable):not(.sb-story table) {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}

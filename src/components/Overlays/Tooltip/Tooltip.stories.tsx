@@ -30,7 +30,8 @@ export default function TooltipExample() {
         Toggle tooltip
       </Button>
       {shown && (
-        <Tooltip id={tooltipId} role="tooltip" targetRef={targetRef} placement="top" mode="${mode}">
+        <Tooltip id={tooltipId} role="tooltip" targetRef={targetRef} placement="top" mode="${mode}"
+          style={{ maxWidth: 'min(320px, calc(100vw - 64px))', boxSizing: 'border-box' }}>
           Hold to record audio. Tap to switch to video.
         </Tooltip>
       )}
@@ -72,7 +73,8 @@ export default function TooltipExample() {
         Hover or focus me
       </Button>
       {shown && (
-        <Tooltip id={tooltipId} role="tooltip" targetRef={targetRef} placement="top">
+        <Tooltip id={tooltipId} role="tooltip" targetRef={targetRef} placement="top"
+          style={{ maxWidth: 'min(320px, calc(100vw - 64px))', boxSizing: 'border-box' }}>
           Hold to record audio. Tap to switch to video.
         </Tooltip>
       )}
@@ -89,6 +91,7 @@ const meta = {
     placement: 'top',
     targetRef: { current: null },
     children: 'Hold to record audio. Tap to switch to video.',
+    style: { maxWidth: 'min(320px, calc(100vw - 64px))', boxSizing: 'border-box' },
   },
   parameters: {
     layout: 'centered',
