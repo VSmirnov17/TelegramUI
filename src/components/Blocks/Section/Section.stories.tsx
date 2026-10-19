@@ -4,7 +4,10 @@ import { Icon28Devices } from 'icons/28/devices';
 import { Icon28Stats } from 'icons/28/stats';
 import { setControlsTypes } from 'storybook/controls';
 
+import { Avatar } from 'components/Blocks/Avatar/Avatar';
 import { Cell } from 'components/Blocks/Cell/Cell';
+import { Info } from 'components/Blocks/Cell/components/Info/Info';
+import { Navigation } from 'components/Blocks/Cell/components/Navigation/Navigation';
 import { IconContainer } from 'components/Blocks/IconContainer/IconContainer';
 import { List } from 'components/Blocks/List/List';
 import { Input } from 'components/Form/Input/Input';
@@ -16,6 +19,7 @@ const meta = {
   title: 'Blocks/Section',
   component: Section,
   argTypes: setControlsTypes(['header', 'footer'], 'text'),
+  parameters: { layout: 'fullscreen' },
 } satisfies Meta<typeof Section>;
 
 export default meta;
@@ -41,7 +45,14 @@ const cells = [
 
 export const Playground: Story = {
   render: (args) => (
-    <List style={{ background: 'var(--tgui--secondary_bg_color)', padding: '40px', width: 500 }}>
+    <List style={{
+      background: 'var(--tgui--secondary_bg_color)',
+      padding: 16,
+      width: 500,
+      maxWidth: '100%',
+      margin: 'auto',
+      boxSizing: 'border-box',
+    }}>
       <Section
         header="Main Settings"
         footer="The official Telegram app is available for Android, iPhone, iPad, Windows, macOS and Linux."
@@ -110,6 +121,45 @@ export const AdjacentErrors: Story = {
     docs: {
       description: {
         story: 'Adjacent error states in a Section, including first, middle, and last rows, mixed form controls, and a custom input background.',
+      },
+    },
+  },
+};
+
+export const RowDividers: Story = {
+  render: () => (
+    <List style={{ width: 480, maxWidth: '100%', margin: 'auto', background: 'var(--tgui--secondary_bg_color)' }}>
+      <Section header="Settings" footer="Separators start at the text and continue under the trailing content, leaving the leading icon or avatar clear.">
+        <Cell before={<IconContainer><Icon28Chat /></IconContainer>} after={<Navigation />}>
+          Chat settings
+        </Cell>
+        <Cell before={<Avatar size={48} acronym="IS" />} after={<Info type="text">Online</Info>}>
+          Profile
+        </Cell>
+        <Cell after={<Info type="text">7</Info>}>Saved messages and other conversations</Cell>
+        <Cell
+          before={<IconContainer><Icon28Devices /></IconContainer>}
+          after={<Navigation />}
+          multiline
+          subtitle="Manage the devices that are currently signed in to your account."
+        >
+          Connected devices
+        </Cell>
+      </Section>
+      <Section header="Mixed content" footer="Other controls keep their full-width separators.">
+        <Input header="Name" placeholder="Your name" aria-label="Settings name" />
+        <Cell before={<IconContainer><Icon28Stats /></IconContainer>} after={<Navigation />}>Statistics</Cell>
+        <Textarea header="Bio" placeholder="Tell us about yourself" aria-label="Settings bio" />
+      </Section>
+      <Section header="Single row" footer="There is no separator after the last or only row.">
+        <Cell before={<IconContainer><Icon28Chat /></IconContainer>} after={<Navigation />}>Support</Cell>
+      </Section>
+    </List>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Row separators with icons, a wider avatar, no leading content, multiline text, trailing content, and mixed form controls. Switch Platform and Theme to compare.',
       },
     },
   },

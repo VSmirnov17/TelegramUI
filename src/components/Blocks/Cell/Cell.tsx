@@ -65,6 +65,7 @@ export const Cell = forwardRef(({
     <Tappable
       ref={ref}
       Component={Component || 'div'}
+      data-tgui-cell=""
       className={classNames(
         styles.wrapper,
         platform === 'ios' && styles['wrapper--ios'],
@@ -75,31 +76,33 @@ export const Cell = forwardRef(({
       {...restProps}
     >
       {hasReactNode(before) && <div className={styles.before}>{before}</div>}
-      <div className={styles.middle}>
-        {hasReactNode(subhead) && (
-          <Subheadline className={styles.subhead} level="2" weight="3">
-            {subhead}
-          </Subheadline>
-        )}
-        {hasTitle && (
-          <Title className={styles.head}>
-            {hasReactNode(children) && <span className={styles.title}>{children}</span>}
-            {hasReactNode(hint) && <span className={styles.hint}>{hint}</span>}
-            {hasReactNode(titleBadge) && titleBadge}
-          </Title>
-        )}
-        {hasReactNode(subtitle) && (
-          <Subheadline className={styles.subtitle} level="2" weight="3">
-            {subtitle}
-          </Subheadline>
-        )}
-        {hasReactNode(description) && (
-          <Description className={styles.description}>
-            {description}
-          </Description>
-        )}
+      <div className={styles.content}>
+        <div className={styles.middle}>
+          {hasReactNode(subhead) && (
+            <Subheadline className={styles.subhead} level="2" weight="3">
+              {subhead}
+            </Subheadline>
+          )}
+          {hasTitle && (
+            <Title className={styles.head}>
+              {hasReactNode(children) && <span className={styles.title}>{children}</span>}
+              {hasReactNode(hint) && <span className={styles.hint}>{hint}</span>}
+              {hasReactNode(titleBadge) && titleBadge}
+            </Title>
+          )}
+          {hasReactNode(subtitle) && (
+            <Subheadline className={styles.subtitle} level="2" weight="3">
+              {subtitle}
+            </Subheadline>
+          )}
+          {hasReactNode(description) && (
+            <Description className={styles.description}>
+              {description}
+            </Description>
+          )}
+        </div>
+        {hasReactNode(after) && <div className={styles.after}>{after}</div>}
       </div>
-      {hasReactNode(after) && <div className={styles.after}>{after}</div>}
     </Tappable>
   );
 });

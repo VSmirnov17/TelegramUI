@@ -1,10 +1,12 @@
 .wrapper {
   --tgui--cell--middle--padding: 16px 0;
+  --tgui--cell--padding: 24px;
+  --tgui--cell--divider: none;
 
   display: flex;
   align-items: center;
   gap: 24px;
-  padding: 0 24px;
+  padding: 0 var(--tgui--cell--padding);
 }
 
 .wrapper--ios {
@@ -20,6 +22,30 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+  gap: inherit;
+  flex-grow: 1;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.content::after {
+  display: var(--tgui--cell--divider);
+  content: '';
+  position: absolute;
+  left: 0;
+  right: calc(-1 * var(--tgui--cell--padding));
+  inset-inline-start: 0;
+  inset-inline-end: calc(-1 * var(--tgui--cell--padding));
+  bottom: calc(-1 * var(--tgui--border--width));
+  border-top: var(--tgui--border--width) solid var(--tgui--outline);
+  pointer-events: none;
 }
 
 .middle {
@@ -69,7 +95,7 @@
 
 .wrapper--ios {
   --tgui--cell--middle--padding: 12px 0;
-  padding: 0 16px;
+  --tgui--cell--padding: 16px;
 }
 
 @media (hover: hover) and (pointer: fine) {
