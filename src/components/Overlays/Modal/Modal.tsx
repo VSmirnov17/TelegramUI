@@ -14,7 +14,7 @@ import styles from './Modal.module.css';
 import { classNames } from 'helpers/classNames';
 import { useAppRootContext } from 'hooks/useAppRootContext';
 
-import { Drawer } from '@xelene/vaul-with-scroll-fix';
+import { Drawer } from 'vaul';
 
 import { FloatingPortalContext } from 'components/Service/RootRenderer/FloatingPortalContext';
 import { ModalClose } from './components/ModalClose/ModalClose';
@@ -71,11 +71,11 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(({
   nested,
   trigger,
   closeThreshold,
-  scrollLockTimeout,
+  scrollLockTimeout = 100,
   snapPoints,
   fadeFromIndex,
   modal,
-  preventScrollRestoration,
+  preventScrollRestoration = true,
   dismissible,
   ...restProps
 }, ref) => {
@@ -109,6 +109,10 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(({
         <Drawer.Content
           ref={ref}
           className={classNames(styles.wrapper, className)}
+          onOpenAutoFocus={(event) => {
+            event.preventDefault();
+            (event.target as HTMLDivElement).focus();
+          }}
           {...restProps}
         >
           <FloatingPortalContext.Provider value={floatingPortal}>

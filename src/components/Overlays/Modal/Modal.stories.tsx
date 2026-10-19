@@ -18,16 +18,24 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-const DecoratorFullScreen: Decorator = (StoryComponent) => (
-  <div style={{
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 600,
-    maxHeight: '96vh',
-  }}>
-    <StoryComponent />
-  </div>
+const DecoratorFullScreen: Decorator = (StoryComponent, { viewMode }) => (
+  <>
+    {viewMode === 'story' && (
+      <div
+        aria-hidden
+        style={{ position: 'fixed', inset: 0, zIndex: -1, background: 'var(--tgui--bg_color)' }}
+      />
+    )}
+    <div style={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: 600,
+      maxHeight: '96vh',
+    }}>
+      <StoryComponent />
+    </div>
+  </>
 );
 
 export const Playground: Story = {
