@@ -77,6 +77,9 @@
 }
 
 .wrapper--ios.wrapper--error .body {
+  /* Keep the outline above adjacent row backgrounds and dividers. */
+  position: relative;
+  z-index: var(--tgui--z-index--simple);
   box-shadow: 0 0 0 1.5px var(--tgui--destructive_text_color);
 }
 
