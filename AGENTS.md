@@ -16,6 +16,7 @@ Test each size with both platforms (`base`, `ios`) and both themes (`light`, `da
 
 ## What to check
 
+- For every Storybook change, compare the affected stories and Docs with existing examples in other sections. Verify consistent layout, spacing, typography, theme colors, controls, navigation, and interaction patterns. Use the shared decorators, library components, and design tokens; resolve unintended inconsistencies before handing the work back.
 - Inspect screenshots for layout, spacing, typography, theme colors, wrapping, clipping, and overlapping elements. Compare with the library's existing examples.
 - Check for unexpected horizontal page overflow. Vertical content must remain reachable by scrolling. Fixed controls, including Tabbar, must stay in their intended visible area.
 - Exercise the affected behavior: typing and focus, buttons, selection, opening and closing overlays, scrolling, or other interactions relevant to the change. Check the browser console for errors.
