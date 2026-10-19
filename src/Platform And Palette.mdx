@@ -20,6 +20,20 @@ Custom Variables offer an extension to the theming capabilities, allowing for mo
 - **Enhanced Styling Flexibility**: These variables enable the definition of unique stylistic elements like accent colors, providing opportunities for brand alignment and distinct visual design.
 - **Brand Identity Support**: By leveraging Custom Variables, developers can ensure that the application not only adheres to Telegram's theming but also reflects the brand's identity through consistent use of colors, typography, and other design elements.
 
+### Telegram-backed surface colors
+
+These surface tokens follow the current Telegram palette in both light and dark appearances:
+
+| Library token | Telegram CSS variable | Examples |
+| --- | --- | --- |
+| `--tgui--tertiary_bg_color` | `--tg-theme-secondary-bg-color` | Avatar placeholders, Cell hover backgrounds, SegmentedControl tracks |
+| `--tgui--segmented_control_active_bg` | `--tg-theme-bg-color` | The selected SegmentedControl segment |
+
+If a Telegram variable is absent, the library uses its existing default for the current appearance. You can override either library token on `AppRoot` for a custom surface color.
+
+Try the [interactive AppRoot preview](?path=/story/service-approot--telegram-theme). The palettes are scoped to each example, so changing one does not affect other stories.
+See Telegram's [ThemeParams documentation](https://core.telegram.org/bots/webapps#themeparams) for the available native theme variables.
+
 ## Internal Mechanism for Theme and Platform Adaptation
 
 `AppRoot` intelligently leverages React context and CSS variables to dynamically adjust the application's styling based on the current theme (light, dark, or Telegram custom themes) and platform (iOS, Android, web). Here's an overview of how this process unfolds internally:

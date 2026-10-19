@@ -55,9 +55,9 @@
   --tgui--divider: rgba(0, 0, 0, .15);
   --tgui--outline: rgba(0, 0, 0, .05);
   --tgui--surface_primary: rgba(255, 255, 255, .95);
-  --tgui--tertiary_bg_color: #F4F4F7;
+  --tgui--tertiary_bg_color: var(--tg-theme-secondary-bg-color, #F4F4F7);
   --tgui--quartenary_bg_color: #F6F6FA;
-  --tgui--segmented_control_active_bg: #FFFFFF;
+  --tgui--segmented_control_active_bg: var(--tg-theme-bg-color, #FFFFFF);
   --tgui--card_bg_color: #FFFFFF;
   --tgui--secondary_hint_color: #A2ACB0;
   --tgui--secondary_fill: rgba(67, 120, 255, .10);
@@ -122,9 +122,9 @@
   --tgui--divider: rgba(255, 255, 255, .05);
   --tgui--outline: rgba(255, 255, 255, .10);
   --tgui--surface_primary: rgba(23, 23, 23, .95);
-  --tgui--tertiary_bg_color: #2A2A2A;
+  --tgui--tertiary_bg_color: var(--tg-theme-secondary-bg-color, #2A2A2A);
   --tgui--quartenary_bg_color: #2F2F2F;
-  --tgui--segmented_control_active_bg: #2F2F2F;
+  --tgui--segmented_control_active_bg: var(--tg-theme-bg-color, #2F2F2F);
   --tgui--card_bg_color: #242424;
   --tgui--secondary_hint_color: #78797E;
   --tgui--secondary_fill: rgba(41, 144, 255, .15);

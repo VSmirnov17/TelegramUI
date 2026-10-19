@@ -1,0 +1,153 @@
+import { CSSProperties, useState } from 'react';
+
+import type { Meta, StoryObj } from '@storybook/react';
+import { Icon28Chat } from 'icons/28/chat';
+import { Icon28Devices } from 'icons/28/devices';
+import { hideControls } from 'storybook/controls';
+
+import { Avatar, Button, Caption, Cell, List, Navigation, Section, SegmentedControl, Title } from 'components';
+import { AppRoot, AppRootProps } from './AppRoot';
+
+const meta = {
+  title: 'Service/AppRoot',
+  component: AppRoot,
+  argTypes: hideControls('children', 'portalContainer', 'style'),
+  parameters: {
+    layout: 'fullscreen',
+    docs: {
+      description: {
+        component: [
+          'Wrap your app in AppRoot to provide platform, appearance, and portal context.',
+          'Telegram CSS variables supply theme colors; library defaults apply when those variables are absent.',
+          'Use the toolbar to switch Platform and Theme, then compare the palettes below.',
+        ].join(' '),
+      },
+    },
+  },
+} satisfies Meta<typeof AppRoot>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+type Palette = 'Inherited' | 'Telegram' | 'Custom';
+
+const PALETTES = {
+  Telegram: {
+    light: { background: '#ffffff', secondary: '#eff1f4', text: '#18222d', hint: '#707579', accent: '#2481cc' },
+    dark: { background: '#17212b', secondary: '#232e3c', text: '#ffffff', hint: '#a8b5c3', accent: '#6ab2f2' },
+  },
+  Custom: {
+    light: { background: '#fff8f2', secondary: '#f1e3d8', text: '#39271c', hint: '#876f5f', accent: '#a85b27' },
+    dark: { background: '#281d32', secondary: '#392943', text: '#f8efff', hint: '#bca7d0', accent: '#c39aef' },
+  },
+};
+
+const ThemePreview = ({ initialPalette = 'Inherited', ...props }: AppRootProps & { initialPalette?: Palette }) => {
+  const [palette, setPalette] = useState<Palette>(initialPalette);
+  const [view, setView] = useState('Week');
+  const colors = palette === 'Inherited' ? undefined : PALETTES[palette][props.appearance === 'dark' ? 'dark' : 'light'];
+  const themeStyle = colors ? {
+    '--tg-theme-bg-color': colors.background,
+    '--tg-theme-secondary-bg-color': colors.secondary,
+    '--tg-theme-section-bg-color': colors.background,
+    '--tg-theme-header-bg-color': colors.background,
+    '--tg-theme-text-color': colors.text,
+    '--tg-theme-hint-color': colors.hint,
+    '--tg-theme-subtitle-text-color': colors.hint,
+    '--tg-theme-section-header-text-color': colors.hint,
+    '--tg-theme-button-color': colors.accent,
+    '--tg-theme-button-text-color': colors.background,
+    '--tg-theme-link-color': colors.accent,
+    '--tg-theme-accent-text-color': colors.accent,
+  } as CSSProperties : {};
+
+  return (
+    <AppRoot {...props} style={{ ...themeStyle, ...props.style }}>
+      <List style={{ width: 480, maxWidth: '100%', margin: 'auto', background: 'var(--tgui--secondary_bg_color)' }}>
+        <div style={{ padding: 16 }}>
+          <Title level="3" weight="2">Theme colors</Title>
+          <Caption Component="p" style={{ color: 'var(--tgui--hint_color)', margin: '8px 0 16px' }}>
+            Compare inherited colors with two sample Telegram palettes.
+          </Caption>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+            {(['Inherited', 'Telegram', 'Custom'] as const).map((name) => (
+              <Button
+                key={name}
+                size="s"
+                mode={palette === name ? 'filled' : 'gray'}
+                aria-pressed={palette === name}
+                onClick={() => setPalette(name)}
+              >
+                {name}
+              </Button>
+            ))}
+          </div>
+        </div>
+        <Section header="Profile" footer="Compare the avatar placeholder and highlighted row with the segmented control below.">
+          <Cell
+            before={<Avatar size={48} fallbackIcon={<Icon28Chat />} aria-label="Avatar placeholder" />}
+            after={<Navigation />}
+            subtitle="Avatar placeholder"
+          >
+            Chat settings
+          </Cell>
+          <Cell hovered before={<Icon28Devices />} after={<Navigation />} subtitle="Highlighted row">
+            Connected devices
+          </Cell>
+        </Section>
+        <div style={{ padding: 16 }}>
+          <SegmentedControl aria-label="Period">
+            {['Day', 'Week', 'Month'].map((label) => (
+              <SegmentedControl.Item key={label} selected={view === label} onClick={() => setView(label)}>
+                {label}
+              </SegmentedControl.Item>
+            ))}
+          </SegmentedControl>
+          <Caption Component="p" style={{ color: 'var(--tgui--hint_color)', marginTop: 12 }}>
+            Switch palettes to compare the track with the selected segment.
+          </Caption>
+          <Caption Component="p" role="status" style={{ color: 'var(--tgui--hint_color)', marginTop: 12 }}>
+            {palette} palette · {props.appearance}
+          </Caption>
+        </div>
+      </List>
+    </AppRoot>
+  );
+};
+
+export const Playground: Story = {
+  render: (args, { globals }) => (
+    <ThemePreview {...args} appearance={args.appearance ?? globals.theme} platform={args.platform ?? globals.platform} />
+  ),
+  parameters: {
+    docs: {
+      source: {
+        code: `import '@telegram-apps/telegram-ui/dist/styles.css';
+import { AppRoot, Cell, List, Section } from '@telegram-apps/telegram-ui';
+
+<AppRoot>
+  <List>
+    <Section header="Settings">
+      <Cell>Chat settings</Cell>
+    </Section>
+  </List>
+</AppRoot>`,
+      },
+    },
+  },
+};
+
+export const TelegramTheme: Story = {
+  render: (args, { globals }) => (
+    <ThemePreview {...args} initialPalette="Telegram" appearance={args.appearance ?? globals.theme} platform={args.platform ?? globals.platform} />
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: [
+          'This preview supplies Telegram CSS variables locally. In a Mini App, Telegram supplies these values.',
+          'Switch to Custom to check another palette without changing the library tokens.',
+        ].join(' '),
+      },
+    },
+  },
+};
