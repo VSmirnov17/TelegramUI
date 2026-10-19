@@ -42,7 +42,7 @@ export const useMultiselect = ({
   onChange,
 
   // Input props
-  inputValue: inputValueProp = '',
+  inputValue: inputValueProp,
   onInputChange: onInputChangeProp,
 
   // Dropdown props

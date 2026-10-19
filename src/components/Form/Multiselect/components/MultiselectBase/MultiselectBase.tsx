@@ -202,6 +202,7 @@ export const MultiselectBase = forwardRef<HTMLDivElement, MultiselectBaseProps>(
         {...restProps}
         Component="input"
         type="text"
+        value={value}
         className={styles.input}
         disabled={disabled}
         readOnly={readOnly}

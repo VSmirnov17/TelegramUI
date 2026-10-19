@@ -1,8 +1,8 @@
 'use client';
 
-import { ChangeEvent, useCallback, useRef, useState } from 'react';
+import { ChangeEvent, useCallback, useRef } from 'react';
 
-import { useCustomEnsuredControl } from 'hooks/useEnsureControl';
+import { useCustomEnsuredControl, useEnsuredControl } from 'hooks/useEnsureControl';
 
 import { MultiselectOption, MultiselectOptionValue } from '../types';
 import { getNewOptionData } from './helpers/getNewOptionData';
@@ -33,7 +33,7 @@ export const useMultiselectInput = ({
   value: valueProp,
   onChange,
   defaultValue = [],
-  inputValue: inputValueProp = '',
+  inputValue: inputValueProp,
   onInputChange,
 }: UseMultiselectInputProps) => {
   const [value, setValue] = useCustomEnsuredControl({
@@ -44,7 +44,12 @@ export const useMultiselectInput = ({
   });
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const [inputValue, setInputValue] = useState(inputValueProp);
+  const [inputValue, inputChange] = useEnsuredControl<string, ChangeEvent<HTMLInputElement>>({
+    value: inputValueProp,
+    defaultValue: '',
+    disabled,
+    onChange: onInputChange,
+  });
 
   const toggleOption = useCallback((nextValueProp: MultiselectOption | MultiselectOptionValue, isNewValue: boolean) => {
     let valueForChange = valueProp;
@@ -93,11 +98,6 @@ export const useMultiselectInput = ({
     addOption(label);
     clearInput();
   }, [addOption, clearInput]);
-
-  const inputChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setInputValue(event.currentTarget.value);
-    onInputChange?.(event);
-  }, [onInputChange]);
 
   return {
     value,
