@@ -19,6 +19,7 @@ const meta = {
         component: [
           'Wrap your app in AppRoot to provide platform, appearance, and portal context.',
           'Telegram CSS variables supply theme colors; library defaults apply when those variables are absent.',
+          'Automatic detection uses base/light during server rendering and hydration, then reads Telegram or the browser theme. Pass the same explicit platform and appearance on the server and client to render the desired variant immediately.',
           'Use the toolbar to switch Platform and Theme, then compare the palettes below.',
         ].join(' '),
       },

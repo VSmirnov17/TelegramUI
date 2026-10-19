@@ -13,9 +13,9 @@ import { usePlatform } from './hooks/usePlatform';
 import { usePortalContainer } from './hooks/usePortalContainer';
 
 export interface AppRootProps extends HTMLAttributes<HTMLDivElement> {
-  /** Application platform, determined automatically if nothing passed */
+  /** Application platform. Auto-detection uses base during SSR/hydration, then reads Telegram on the client. */
   platform?: AppRootContextInterface['platform'];
-  /** Application appearance, determined automatically if nothing passed */
+  /** Application appearance. Auto-detection uses light during SSR/hydration, then follows Telegram or the browser theme. */
   appearance?: AppRootContextInterface['appearance'];
   /** Rewriting portal container for rendering, AppRoot container as default */
   portalContainer?: AppRootContextInterface['portalContainer'];

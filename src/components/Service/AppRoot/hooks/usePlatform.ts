@@ -1,17 +1,14 @@
-import { useContext } from 'react';
+import { useContext, useSyncExternalStore } from 'react';
 
 import { AppRootContext, AppRootContextInterface } from '../AppRootContext';
 import { getInitialPlatform } from './helpers/getInitialPlatform';
 
+const subscribe = () => () => {};
+const getServerSnapshot = () => 'base' as const;
+
 export const usePlatform = (platform?: AppRootContextInterface['platform']): NonNullable<AppRootContextInterface['platform']> => {
-  if (platform !== undefined) {
-    return platform;
-  }
-
   const appContext = useContext(AppRootContext);
-  if (appContext.isRendered && appContext.platform !== undefined) {
-    return appContext.platform;
-  }
+  const detectedPlatform = useSyncExternalStore(subscribe, getInitialPlatform, getServerSnapshot);
 
-  return getInitialPlatform();
+  return platform ?? (appContext.isRendered ? appContext.platform : undefined) ?? detectedPlatform;
 };
