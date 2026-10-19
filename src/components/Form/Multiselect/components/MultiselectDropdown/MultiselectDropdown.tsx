@@ -1,9 +1,9 @@
-import { forwardRef, ForwardRefExoticComponent, Fragment, MouseEvent, RefAttributes, RefObject } from 'react';
+import { forwardRef, ForwardRefExoticComponent, Fragment, MouseEvent, RefAttributes } from 'react';
 import styles from './MultiselectDropdown.module.css';
 
 import { Cell, CellProps } from 'components/Blocks/Cell/Cell';
 import { MultiselectOption } from 'components/Form/Multiselect/types';
-import { Popper } from 'components/Overlays/Popper/Popper';
+import { Popper, PopperProps } from 'components/Overlays/Popper/Popper';
 import { isCreateNewOptionPreset, isEmptyOptionPreset } from '../../hooks/constants';
 import { UseMultiselectProps } from '../../hooks/useMultiselect';
 import { renderOptionDefault } from './constants';
@@ -12,7 +12,7 @@ export interface MultiselectDropdownProps extends Required<Pick<UseMultiselectPr
   /** Array of selected options. */
   value: MultiselectOption[];
   /** Reference to the target element the dropdown is associated with. */
-  targetRef: RefObject<HTMLElement>;
+  targetRef: PopperProps['targetRef'];
   /** Accessibility ID for the dropdown. */
   dropdownAriaId: string;
   /** Currently focused option within the dropdown. */

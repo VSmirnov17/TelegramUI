@@ -6,8 +6,10 @@ import styles from './Multiselect.module.css';
 import { Keys } from 'helpers/accessibility';
 import { classNames } from 'helpers/classNames';
 import { callMultiple } from 'helpers/function';
+import { hasReactNode } from 'helpers/react/node';
 import { multipleRef } from 'helpers/react/refs';
 import { useGlobalClicks } from 'hooks/useGlobalClicks';
+import { usePlatform } from 'hooks/usePlatform';
 
 import { Icon20ChevronDown } from 'icons/20/chevron_down';
 
@@ -66,6 +68,7 @@ export const Multiselect = forwardRef<HTMLDivElement, MultiselectProps>(({
   onKeyDown,
   ...restProps
 }, ref) => {
+  const platform = usePlatform();
   const {
     // Option props
     value,
@@ -109,7 +112,25 @@ export const Multiselect = forwardRef<HTMLDivElement, MultiselectProps>(({
   });
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const rootRef = useRef(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  const dropdownTarget = {
+    contextElement: rootRef.current ?? undefined,
+    getBoundingClientRect: () => {
+      const field = rootRef.current?.getBoundingClientRect();
+      if (!field) {
+        return new DOMRect();
+      }
+
+      // Include the floating label above the field without changing the popup width
+      // or the bottom edge used for downward placement.
+      const top = platform === 'base' && hasReactNode(header)
+        ? containerRef.current?.getBoundingClientRect().top ?? field.top
+        : field.top;
+
+      return new DOMRect(field.x, top, field.width, field.bottom - top);
+    },
+  };
 
   const dropdownAriaId = useId();
   const dropdownScrollBoxRef = useRef<HTMLDivElement>(null);
@@ -310,7 +331,7 @@ export const Multiselect = forwardRef<HTMLDivElement, MultiselectProps>(({
           dropdownAriaId={dropdownAriaId}
           options={options}
           onMouseLeave={onDropdownMouseLeave}
-          targetRef={rootRef}
+          targetRef={dropdownTarget}
           addOptionFromInput={() => addOptionFromInput(inputValue)}
           setFocusedOptionIndex={setFocusedOptionIndex}
           renderOption={renderOption}

@@ -33,8 +33,9 @@ export const autoUpdateFloatingElement = (
       initialUpdate = false;
     });
 
-    if (isHTMLElement(reference)) {
-      observer.observe(reference, {
+    const referenceElement = 'contextElement' in reference ? reference.contextElement : reference;
+    if (isHTMLElement(referenceElement)) {
+      observer.observe(referenceElement, {
         childList: true,
         subtree: true,
       });
