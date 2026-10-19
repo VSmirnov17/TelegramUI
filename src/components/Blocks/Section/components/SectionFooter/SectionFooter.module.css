@@ -16,5 +16,5 @@
 }
 
 .text {
-  color: var(--tgui--section_header_text_color);
+  color: var(--tgui--hint_color);
 }
