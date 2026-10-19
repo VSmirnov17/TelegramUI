@@ -1,6 +1,6 @@
 'use client';
 
-import { HTMLAttributes, ReactElement } from 'react';
+import { forwardRef, ForwardRefExoticComponent, HTMLAttributes, ReactElement, RefAttributes } from 'react';
 import styles from './Tabbar.module.css';
 
 import { classNames } from 'helpers/classNames';
@@ -14,22 +14,28 @@ export interface TabbarProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactElement<TabbarItemProps>[];
 }
 
+type TabbarWithComponents = ForwardRefExoticComponent<TabbarProps & RefAttributes<HTMLDivElement>> & {
+  Item: typeof TabbarItem;
+};
+
 /**
  * Serves as a container for `Tabbar.Item` components, rendering a navigational tab bar.
  * Utilizes a `FixedLayout` to ensure the tab bar remains positioned at a specific area within a view,
  * typically at the bottom of the screen, making it ideal for mobile or web application navigation menus.
  *
  * The component adapts its styling based on the platform, providing a consistent look and feel across different devices.
+ * The forwarded ref points to the root div. Observe it with ResizeObserver to keep floating content above the tab bar as its height changes.
  */
-export const Tabbar = ({
+export const Tabbar = forwardRef<HTMLDivElement, TabbarProps>(({
   children,
   className,
   ...restProps
-}: TabbarProps) => {
+}, ref) => {
   const platform = usePlatform();
 
   return (
     <FixedLayout
+      ref={ref}
       className={classNames(
         styles.wrapper,
         platform === 'ios' && styles['wrapper--ios'],
@@ -40,6 +46,6 @@ export const Tabbar = ({
       {children}
     </FixedLayout>
   );
-};
+}) as TabbarWithComponents;
 
 Tabbar.Item = TabbarItem;

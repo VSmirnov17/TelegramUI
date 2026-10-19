@@ -1,4 +1,4 @@
-import { AllHTMLAttributes, ElementType } from 'react';
+import { AllHTMLAttributes, ElementType, forwardRef } from 'react';
 import styles from './FixedLayout.module.css';
 
 import { classNames } from 'helpers/classNames';
@@ -19,15 +19,16 @@ const verticalStyles = {
  * This component provides a flexible way to create a layout that is fixed to either the top or bottom of its parent container.
  * It's useful for creating headers, footers, or any element that should remain in view regardless of the scrolling content.
  */
-export const FixedLayout = ({
+export const FixedLayout = forwardRef<HTMLElement, FixedLayoutProps>(({
   Component = 'div',
   vertical = 'bottom',
   className,
   children,
   ...restProps
-}: FixedLayoutProps) => {
+}, ref) => {
   return (
     <Component
+      ref={ref}
       className={classNames(
         styles.wrapper,
         vertical && verticalStyles[vertical],
@@ -38,5 +39,5 @@ export const FixedLayout = ({
       {children}
     </Component>
   );
-};
+});
 
