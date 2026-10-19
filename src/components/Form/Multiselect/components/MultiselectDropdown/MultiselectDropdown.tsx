@@ -70,6 +70,7 @@ export const MultiselectDropdown = forwardRef<HTMLDivElement, MultiselectDropdow
       autoUpdateOnTargetResize
       role="listbox"
       placement="bottom"
+      withArrow={false}
       sameWidth
       className={styles.wrapper}
     >

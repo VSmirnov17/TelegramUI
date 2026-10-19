@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
-import { Decorator, Meta, StoryObj } from '@storybook/react';
+import type { Decorator, Meta, StoryObj } from '@storybook/react';
 import { hideControls, setControlsTypes } from 'storybook/controls';
 
-import { Button, Section } from 'components';
+import { Button, Placeholder, Section } from 'components';
 import { List } from 'components/Blocks/List/List';
 import { MultiselectOption } from 'components/Form/Multiselect/types';
 import { Multiselect, MultiselectProps } from './Multiselect';
@@ -152,5 +152,49 @@ export const UncontrolledInput: StoryObj<MultiselectProps> = {
     expectInputValue(input, '');
     await changeInput(input, 'lin');
     expectInputValue(input, 'lin');
+  },
+};
+
+const ScrollableOptionsExample = (props: MultiselectProps) => {
+  const [value, setValue] = useState<MultiselectOption[]>([]);
+
+  return (
+    <List style={{
+      width: 400,
+      maxWidth: '100%',
+      minHeight: 'max(360px, calc(100vh - 32px))',
+      margin: 'auto',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      background: 'var(--tgui--secondary_bg_color)',
+    }}>
+      <Placeholder
+        header="Scrollable options"
+        description="Open the field near the bottom of the page, then scroll its options."
+      />
+      <Section header="Platforms" footer="Scroll the options or use the arrow keys to choose the last platform.">
+        <Multiselect
+          {...props}
+          header="Supported platforms"
+          aria-label="Scrollable platforms"
+          placeholder="Select platforms"
+          options={PLATFORM_OPTIONS}
+          value={value}
+          onChange={setValue}
+        />
+      </Section>
+    </List>
+  );
+};
+
+export const ScrollableOptions: StoryObj<MultiselectProps> = {
+  render: (props) => <ScrollableOptionsExample {...props} />,
+  parameters: {
+    docs: {
+      description: {
+        story: 'The field sits near the bottom of the canvas so the dropdown can open upwards. Scroll through the options using a mouse wheel, touch, or arrow keys.',
+      },
+    },
   },
 };
