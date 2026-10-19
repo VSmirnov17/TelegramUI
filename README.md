@@ -83,6 +83,25 @@ The standard `style` prop applies to the native input element:
 
 See **Form → Input → Custom Background** in Storybook for default, error, and disabled examples.
 
+## Section layout
+
+`className` and `style` on `Section` apply to the outer section, including its header and footer.
+Use `bodyProps.className` or `bodyProps.style` to customize the container around its children.
+Disable separators with `showDividers={false}` when using flex, grid, or gaps:
+
+```tsx
+<Section
+  header="Actions"
+  showDividers={false}
+  bodyProps={{ style: { display: 'flex', flexWrap: 'wrap', gap: 12, padding: 16 } }}
+>
+  <div><Button size="s">New chat</Button></div>
+  <div><Button size="s" mode="gray">Devices</Button></div>
+</Section>
+```
+
+See **Blocks → Section → With Gaps / Custom Layout** in Storybook for spaced fields, a responsive grid, and wrapping actions.
+
 ## Icons
 
 Import icons alongside components from the package root:

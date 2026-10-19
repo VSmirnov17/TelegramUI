@@ -1,3 +1,5 @@
+import styles from './Section.stories.module.css';
+
 import type { Meta, StoryObj } from '@storybook/react';
 import { Icon28Chat } from 'icons/28/chat';
 import { Icon28Devices } from 'icons/28/devices';
@@ -5,6 +7,7 @@ import { Icon28Stats } from 'icons/28/stats';
 import { setControlsTypes } from 'storybook/controls';
 
 import { Avatar } from 'components/Blocks/Avatar/Avatar';
+import { Button } from 'components/Blocks/Button/Button';
 import { Cell } from 'components/Blocks/Cell/Cell';
 import { Info } from 'components/Blocks/Cell/components/Info/Info';
 import { Navigation } from 'components/Blocks/Cell/components/Navigation/Navigation';
@@ -13,6 +16,8 @@ import { List } from 'components/Blocks/List/List';
 import { Input } from 'components/Form/Input/Input';
 import { Select } from 'components/Form/Select/Select';
 import { Textarea } from 'components/Form/Textarea/Textarea';
+import { Caption } from 'components/Typography/Caption/Caption';
+import { Title } from 'components/Typography/Title/Title';
 import { Section } from './Section';
 
 const meta = {
@@ -160,6 +165,83 @@ export const RowDividers: Story = {
     docs: {
       description: {
         story: 'Row separators with icons, a wider avatar, no leading content, multiline text, trailing content, and mixed form controls. Switch Platform and Theme to compare.',
+      },
+    },
+  },
+};
+
+export const WithGaps: Story = {
+  args: {
+    header: 'Contact details',
+    footer: 'Spacing applies to the fields; the header and footer keep their usual layout.',
+    showDividers: false,
+    bodyProps: { style: { display: 'flex', flexDirection: 'column', gap: 16, padding: 16 } },
+  },
+  render: (args) => (
+    <List style={{ width: 500, maxWidth: '100%', margin: 'auto', background: 'var(--tgui--secondary_bg_color)' }}>
+      <Section {...args}>
+        <Input header="Name" placeholder="Your name" aria-label="Spaced name" />
+        <Input header="Email" placeholder="Your email" type="email" aria-label="Spaced email" />
+        <Textarea header="Message" placeholder="How can we help?" aria-label="Spaced message" />
+      </Section>
+    </List>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Use bodyProps.style for padding and gaps. Set showDividers to false so separators do not become extra flex items.',
+      },
+    },
+  },
+};
+
+export const CustomLayout: Story = {
+  args: { showDividers: false },
+  render: (args) => (
+    <List style={{ width: 600, maxWidth: '100%', margin: 'auto', background: 'var(--tgui--secondary_bg_color)' }}>
+      <Section
+        {...args}
+        header="Overview"
+        footer="The grid adapts to the available width. Its CSS class is passed through bodyProps.className."
+        bodyProps={{ className: styles.grid }}
+      >
+        {[
+          { label: 'Messages', value: '128', icon: <Icon28Chat /> },
+          { label: 'Devices', value: '3', icon: <Icon28Devices /> },
+          { label: 'Views', value: '2.4K', icon: <Icon28Stats /> },
+        ].map(({ label, value, icon }) => (
+          <div key={label} className={styles.card} style={{ borderRadius: 12 }}>
+            {icon}
+            <Title level="2" Component="span">{value}</Title>
+            <Caption className={styles.hint}>{label}</Caption>
+          </div>
+        ))}
+      </Section>
+      <Section
+        {...args}
+        header="Quick actions"
+        footer="A flex row with wrapping and a 12px gap, styled through bodyProps.style."
+        bodyProps={{ style: { display: 'flex', flexWrap: 'wrap', gap: 12, padding: 16 } }}
+      >
+        <div><Button size="s" before={<Icon28Chat />}>New chat</Button></div>
+        <div><Button size="s" mode="gray" before={<Icon28Devices />}>Devices</Button></div>
+        <div><Button size="s" mode="gray" before={<Icon28Stats />}>Statistics</Button></div>
+      </Section>
+      <Section
+        {...args}
+        header="Rows without dividers"
+        footer="Both the full-width separators and the inset Cell lines are disabled."
+        bodyProps={{ style: { display: 'flex', flexDirection: 'column', gap: 12, padding: 16 } }}
+      >
+        <Cell before={<Icon28Chat />} style={{ borderRadius: 12, background: 'var(--tgui--tertiary_bg_color)' }}>Chats</Cell>
+        <Cell before={<Icon28Devices />} style={{ borderRadius: 12, background: 'var(--tgui--tertiary_bg_color)' }}>Devices</Cell>
+      </Section>
+    </List>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'className and style on Section target the outer section. Use bodyProps to style the children container and showDividers={false} for custom layouts.',
       },
     },
   },

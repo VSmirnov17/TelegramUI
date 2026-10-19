@@ -1,0 +1,21 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  padding: 16px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding: 16px;
+  background: var(--tgui--tertiary_bg_color);
+  color: var(--tgui--text_color);
+  box-sizing: border-box;
+}
+
+.hint {
+  color: var(--tgui--hint_color);
+}

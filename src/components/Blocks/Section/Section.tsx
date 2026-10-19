@@ -22,14 +22,19 @@ export interface SectionProps extends HTMLAttributes<HTMLElement> {
    * For a centered footer, use `<Section.Footer centered>{footerText}</Section.Footer>`.
    */
   footer?: ReactNode;
+  /** Attributes for the container around children. Use its className or style to customize layout and spacing. */
+  bodyProps?: Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'dangerouslySetInnerHTML'>;
+  /** Show separators between children. Disable for layouts with gaps, flex rows, or grids. Defaults to true. */
+  showDividers?: boolean;
 }
 
 /**
  * Organizes content into distinct sections with optional headers and footers. It automatically wraps
  * primitive header and footer content in the appropriate sub-components, and inserts dividers between
- * children when rendering multiple elements.
+ * children when rendering multiple elements. Use `bodyProps` to style the content independently
+ * of the header and footer, and `showDividers={false}` for custom layouts.
  */
-export const Section = ({ header, footer, className, children, ...restProps }: SectionProps) => {
+export const Section = ({ header, footer, bodyProps, showDividers = true, className, children, ...restProps }: SectionProps) => {
   const platform = usePlatform();
 
   const headerWithWrapper = isPrimitiveReactNode(header) ? <SectionHeader>{header}</SectionHeader> : header;
@@ -47,11 +52,14 @@ export const Section = ({ header, footer, className, children, ...restProps }: S
     >
       <div className={styles.bodyWithHeader}>
         {headerWithWrapper}
-        <div className={styles.body}>
+        <div
+          {...bodyProps}
+          className={classNames(styles.body, showDividers && styles['body--dividers'], bodyProps?.className)}
+        >
           {Children.map(children, (child, index) => (
             <>
               {child}
-              {index < Children.count(children) - 1 && (
+              {showDividers && index < Children.count(children) - 1 && (
                 <Divider className={styles.divider} />
               )}
             </>

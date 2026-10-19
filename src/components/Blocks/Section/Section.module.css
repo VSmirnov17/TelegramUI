@@ -20,11 +20,11 @@
   border-radius: 12px;
 }
 
-.body > [data-tgui-cell]:not(:last-child) {
+.body--dividers > [data-tgui-cell]:not(:last-child) {
   --tgui--cell--divider: block;
 }
 
-.body > [data-tgui-cell] + .divider {
+.body--dividers > [data-tgui-cell] + .divider {
   /* Keep the row spacing while Cell draws the line from its text to the edge. */
   visibility: hidden;
 }
