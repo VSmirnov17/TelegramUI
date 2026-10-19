@@ -67,6 +67,22 @@ const App = () => (
 export default App;
 ```
 
+## Input styling
+
+Use `rootStyle` to customize the whole `Input` container, including its background, header, and icon areas.
+The standard `style` prop applies to the native input element:
+
+```tsx
+<Input
+  header="Name"
+  rootStyle={{ backgroundColor: '#dceeff' }}
+  style={{ color: '#18334d' }}
+  placeholder="Your name"
+/>
+```
+
+See **Form → Input → Custom Background** in Storybook for default, error, and disabled examples.
+
 ## Icons
 
 Import icons alongside components from the package root:

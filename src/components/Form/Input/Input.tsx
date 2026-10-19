@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, InputHTMLAttributes } from 'react';
+import { CSSProperties, forwardRef, InputHTMLAttributes } from 'react';
 import styles from './Input.module.css';
 
 import { classNames } from 'helpers/classNames';
@@ -10,7 +10,10 @@ import { FormInput, FormPublicProps } from 'components/Form/FormInput/FormInput'
 import { Subheadline } from 'components/Typography/Subheadline/Subheadline';
 import { Text } from 'components/Typography/Text/Text';
 
-export interface InputProps extends FormPublicProps, InputHTMLAttributes<HTMLInputElement> {}
+export interface InputProps extends FormPublicProps, InputHTMLAttributes<HTMLInputElement> {
+  /** Styles for the whole form container, including its background, header, and icon areas. Use `style` for the native input. */
+  rootStyle?: CSSProperties;
+}
 
 /**
  * Renders a text input field with enhanced styling and integration into a form structure. Supports customization through `FormPublicProps` and standard input attributes.
@@ -24,6 +27,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
   status,
   className,
   disabled,
+  rootStyle,
   ...restProps
 }, ref) => {
   const platform = usePlatform();
@@ -36,6 +40,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
       after={after}
       status={status}
       disabled={disabled}
+      rootStyle={rootStyle}
       className={classNames(
         styles.wrapper,
         platform === 'ios' && styles['wrapper--ios'],

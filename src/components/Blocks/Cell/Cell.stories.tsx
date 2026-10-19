@@ -4,6 +4,8 @@ import { hideControls, setControlsTypes } from 'storybook/controls';
 import { Avatar } from 'components/Blocks/Avatar/Avatar';
 import { Badge } from 'components/Blocks/Badge/Badge';
 import { Info } from 'components/Blocks/Cell/components/Info/Info';
+import { List } from 'components/Blocks/List/List';
+import { Section } from 'components/Blocks/Section/Section';
 import { Cell } from './Cell';
 
 const meta = {
@@ -41,7 +43,36 @@ export const CellWithInfo: Story = {
 
 export const WithNativeDateInput: Story = {
   args: {
-    children: <input type="date" aria-label="Date" />,
+    subhead: 'Date',
+  },
+  render: (args, context) => (
+    <List style={{ width: 400, maxWidth: '100%', margin: 'auto', background: 'var(--tgui--secondary_bg_color)' }}>
+      <Section header="Appointment" footer="Choose an appointment date.">
+        <Cell {...args}>
+          <input
+            type="date"
+            aria-label="Date"
+            style={{
+              font: 'inherit',
+              color: 'inherit',
+              background: 'transparent',
+              border: 0,
+              padding: 0,
+              minHeight: 32,
+              maxWidth: '100%',
+              colorScheme: context.globals.theme === 'dark' ? 'dark' : 'light',
+            }}
+          />
+        </Cell>
+      </Section>
+    </List>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'A native date input inside Cell, using the library typography and theme. It remains statically positioned to cover ripple hit-testing regression #39.',
+      },
+    },
   },
   play: ({ canvasElement }) => {
     const input = canvasElement.querySelector('input');

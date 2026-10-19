@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, HTMLAttributes, ReactNode, useState } from 'react';
+import { CSSProperties, forwardRef, HTMLAttributes, ReactNode, useState } from 'react';
 import styles from './FormInput.module.css';
 
 import { classNames } from 'helpers/classNames';
@@ -23,7 +23,10 @@ export interface FormPublicProps {
   disabled?: boolean;
 }
 
-export interface FormInputProps extends FormPublicProps, HTMLAttributes<HTMLLabelElement> {}
+export interface FormInputProps extends FormPublicProps, HTMLAttributes<HTMLLabelElement> {
+  /** Styles for the outer container. The standard `style` prop applies to the label. */
+  rootStyle?: CSSProperties;
+}
 
 const platformStyles = {
   base: styles['wrapper--base'],
@@ -48,6 +51,7 @@ export const FormInput = forwardRef<HTMLDivElement, FormInputProps>(({
   disabled,
   children,
   className,
+  rootStyle,
   onFocus: onFocusProp,
   onBlur: onBlurProp,
   ...restProps
@@ -56,6 +60,7 @@ export const FormInput = forwardRef<HTMLDivElement, FormInputProps>(({
   const [isFocused, setIsFocused] = useState(false);
 
   const formStatus = status || (isFocused ? 'focused' : 'default');
+  const hasCustomBackground = Boolean(rootStyle?.background || rootStyle?.backgroundColor || rootStyle?.backgroundImage);
 
   const onFocus = callMultiple(onFocusProp, () => {
     if (disabled) {
@@ -74,8 +79,10 @@ export const FormInput = forwardRef<HTMLDivElement, FormInputProps>(({
         platformStyles[platform],
         formStatusStyles[formStatus],
         disabled && styles['wrapper--disabled'],
+        hasCustomBackground && styles['wrapper--custom-background'],
       )}
       aria-disabled={disabled}
+      style={rootStyle}
     >
       <label
         aria-disabled={disabled}

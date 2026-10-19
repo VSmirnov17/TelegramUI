@@ -79,3 +79,16 @@
 .wrapper--ios.wrapper--error .body {
   box-shadow: 0 0 0 1.5px var(--tgui--destructive_text_color);
 }
+
+.wrapper--custom-background.wrapper--ios {
+  border-radius: 12px;
+}
+
+.wrapper--custom-background .body {
+  background: transparent;
+}
+
+.wrapper--custom-background .title,
+.wrapper--custom-background.wrapper--disabled::after {
+  background: inherit;
+}

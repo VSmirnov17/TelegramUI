@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Decorator, Meta, StoryObj } from '@storybook/react';
 import { hideControls, setControlsTypes } from 'storybook/controls';
 
-import { Section } from 'components';
+import { Button, Section } from 'components';
 import { List } from 'components/Blocks/List/List';
 import { MultiselectOption } from 'components/Form/Multiselect/types';
 import { Multiselect, MultiselectProps } from './Multiselect';
@@ -33,7 +33,7 @@ const PLATFORM_OPTIONS: MultiselectOption[] = [
 ];
 
 const decorator: Decorator = (Story) => (
-  <List style={{ background: 'var(--tgui--secondary_bg_color)', minHeight: '360px' }}>
+  <List style={{ background: 'var(--tgui--secondary_bg_color)', minHeight: 360, width: 400, maxWidth: '100%', margin: 'auto' }}>
     <Story />
   </List>
 );
@@ -95,8 +95,10 @@ const ControlledInputExample = (props: MultiselectProps) => {
 
   return (
     <>
-      <button type="button" onClick={() => setInputValue('linux')}>Set Linux</button>
-      <button type="button" onClick={() => setInputValue('')}>Clear input</button>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, padding: '16px 22px 0' }}>
+        <Button size="s" onClick={() => setInputValue('linux')}>Set Linux</Button>
+        <Button size="s" mode="bezeled" onClick={() => setInputValue('')}>Clear input</Button>
+      </div>
       <StoryBookComponent
         {...props}
         sectionHeader="Controlled input"
