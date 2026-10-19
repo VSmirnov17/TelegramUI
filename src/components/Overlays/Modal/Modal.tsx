@@ -16,6 +16,7 @@ import { useAppRootContext } from 'hooks/useAppRootContext';
 
 import { Drawer } from '@xelene/vaul-with-scroll-fix';
 
+import { FloatingPortalContext } from 'components/Service/RootRenderer/FloatingPortalContext';
 import { ModalClose } from './components/ModalClose/ModalClose';
 import { ModalHeader } from './components/ModalHeader/ModalHeader';
 import { ModalOverlay } from './components/ModalOverlay/ModalOverlay';
@@ -80,6 +81,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(({
 }, ref) => {
   const container = useAppRootContext();
   const [portal, setPortal] = useState(container.portalContainer?.current);
+  const [floatingPortal, setFloatingPortal] = useState<HTMLDivElement | null>(null);
 
   // This is internal optimization for AppRoot
   // React sets ref to normal value only after the first render
@@ -109,10 +111,13 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(({
           className={classNames(styles.wrapper, className)}
           {...restProps}
         >
-          {header}
-          <div className={styles.body}>
-            {children}
-          </div>
+          <FloatingPortalContext.Provider value={floatingPortal}>
+            {header}
+            <div className={styles.body}>
+              {children}
+            </div>
+            <div ref={setFloatingPortal} data-tgui-modal-portal="" />
+          </FloatingPortalContext.Provider>
         </Drawer.Content>
       </Drawer.Portal>
     </Component>

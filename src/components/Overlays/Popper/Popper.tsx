@@ -1,6 +1,7 @@
 'use client';
 
-import { ElementType, forwardRef, HTMLAttributes, RefObject, useState } from 'react';
+import { ElementType, forwardRef, HTMLAttributes, RefObject, useContext, useState } from 'react';
+import { createPortal } from 'react-dom';
 import styles from './Popper.module.css';
 
 import { classNames } from 'helpers/classNames';
@@ -9,6 +10,7 @@ import { useEnhancedEffect } from 'hooks/useEnhancedEffect';
 
 import { useFloating, VirtualElement } from '@floating-ui/react-dom';
 
+import { FloatingPortalContext } from 'components/Service/RootRenderer/FloatingPortalContext';
 import { RootRenderer } from 'components/Service/RootRenderer/RootRenderer';
 import { FloatingArrow, FloatingArrowProps } from './components/FloatingArrow/FloatingArrow';
 import { DEFAULT_ARROW_HEIGHT, DEFAULT_ARROW_PADDING, DefaultIcon } from './components/FloatingArrow/icons/arrow';
@@ -60,6 +62,7 @@ export const Popper = forwardRef(({
   children,
   ...restProps
 }: PopperProps, ref) => {
+  const portalContainer = useContext(FloatingPortalContext);
   const [arrowRef, setArrowRef] = useState<HTMLDivElement | null>(null);
 
   const { strictPlacement, middlewares } = useFloatingMiddlewares({
@@ -93,25 +96,29 @@ export const Popper = forwardRef(({
     refs.setReference('current' in targetRef ? targetRef.current : targetRef);
   }, [refs.setReference, targetRef]);
 
-  return (
-    <RootRenderer>
-      <Component
-        {...restProps}
-        ref={multipleRef(ref, refs.setFloating)}
-        style={{ ...style, ...floatingStyles }}
-        className={classNames(styles.wrapper, className)}
-      >
-        {withArrow && (
-          <FloatingArrow
-            {...arrowProps}
-            coords={middlewareData.arrow}
-            placement={resolvedPlacement}
-            ref={setArrowRef}
-            Icon={ArrowIcon}
-          />
-        )}
-        {children}
-      </Component>
-    </RootRenderer>
+  if (portalContainer === null) {
+    return null;
+  }
+
+  const content = (
+    <Component
+      {...restProps}
+      ref={multipleRef(ref, refs.setFloating)}
+      style={{ ...style, ...floatingStyles }}
+      className={classNames(styles.wrapper, className)}
+    >
+      {withArrow && (
+        <FloatingArrow
+          {...arrowProps}
+          coords={middlewareData.arrow}
+          placement={resolvedPlacement}
+          ref={setArrowRef}
+          Icon={ArrowIcon}
+        />
+      )}
+      {children}
+    </Component>
   );
+
+  return portalContainer ? createPortal(content, portalContainer) : <RootRenderer>{content}</RootRenderer>;
 });
