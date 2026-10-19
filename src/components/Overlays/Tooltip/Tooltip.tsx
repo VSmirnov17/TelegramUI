@@ -11,10 +11,11 @@ export interface TooltipProps extends PopperProps {
 }
 
 /**
- * The Tooltip component provides text labels that appear when the user hovers over, focuses on,
- * or touches an element. It's built on top of the Popper component for automatic positioning
- * relative to the target element. The tooltip supports light and dark modes for different visual
- * contexts and uses the Caption component for its content to ensure consistent typography.
+ * Renders a text label positioned relative to targetRef using Popper.
+ * The application controls visibility by conditionally rendering Tooltip and attaching
+ * click, hover, or focus handlers to the target. Tooltip does not add these handlers itself.
+ * Set role="tooltip" and an id, then reference that id with aria-describedby on the target.
+ * Render inside AppRoot to inherit the library's styles, theme, and portal container.
  */
 export const Tooltip = ({
   mode = 'light',
