@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppRoot, Button, Cell, Input, Modal, Multiselect, Section } from '@telegram-apps/telegram-ui';
+import { SegmentedThemeProbes } from './segmented-theme';
 
 const RefLifecycle = () => {
   const [phase, setPhase] = useState('first');
@@ -79,6 +80,7 @@ const Consumer = () => {
           <Input aria-label="Library input" defaultValue="Library draft" />
           <Button onClick={() => setCount(count + 1)}>Count: {count}</Button>
         </Section>
+        <SegmentedThemeProbes />
         <ContainedModal />
         <AppRoot data-testid="inherited"><span>Inherited settings</span></AppRoot>
         <AppRoot data-testid="override" platform="base" appearance="light"><span>Explicit settings</span></AppRoot>
