@@ -39,6 +39,7 @@ const Consumer = () => {
   const [hydrated, setHydrated] = useState(false);
   const [count, setCount] = useState(0);
   const [selected, setSelected] = useState([]);
+  const [selectedAndClose, setSelectedAndClose] = useState([]);
   useEffect(() => setHydrated(true), []);
 
   return (
@@ -64,6 +65,14 @@ const Consumer = () => {
               value={selected}
               onChange={setSelected}
             />
+            <Multiselect
+              aria-label="Platforms and close"
+              closeDropdownAfterSelect
+              options={[{ value: 'ios', label: 'iOS' }, { value: 'web', label: 'Web' }]}
+              value={selectedAndClose}
+              onChange={setSelectedAndClose}
+            />
+            <output data-testid="selection-and-close">{selectedAndClose.map((option) => option.label).join(', ')}</output>
             <output data-testid="selection">{selected.map((option) => option.label).join(', ')}</output>
             <Modal.Close><Button>Done</Button></Modal.Close>
           </div>
