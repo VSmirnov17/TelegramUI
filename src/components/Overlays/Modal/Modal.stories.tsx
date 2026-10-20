@@ -1,4 +1,4 @@
-import { useId, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 
 import type { Decorator, Meta, StoryObj } from '@storybook/react';
 import { Icon28Close } from 'icons/28/close';
@@ -27,6 +27,8 @@ const meta = {
           'the text is visible on iOS and visually hidden on base. For a headerless or custom-header layout, render exactly one Modal.Title instead.',
           'Do not nest Modal.Title inside Modal.Header. Use asChild with library typography or an existing element to preserve its styling.',
           'Modal.Description optionally connects a short description to the dialog. For a visually hidden custom title, wrap Modal.Title in VisuallyHidden.',
+          'For uncontrolled async self-close, forward a button ref through Modal.Close and call its click method after success.',
+          'The ref points to the child element, not a wrapper. Use a native Button for keyboard activation; the Modal ref still points to the dialog div.',
         ].join(' '),
       },
     },
@@ -167,6 +169,176 @@ export const Controlled: Story = {
         </Modal>
       </Placeholder>
     );
+  },
+  decorators: [DecoratorFullScreen],
+};
+
+const AsyncCloseContent = () => {
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const active = useRef(true);
+  const [pending, setPending] = useState(false);
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    active.current = true;
+    return () => { active.current = false; };
+  }, []);
+
+  const save = async (reject: boolean) => {
+    setPending(true);
+    setFailed(false);
+    try {
+      await new Promise<void>((resolve, fail) => {
+        setTimeout(() => (reject ? fail(new Error('Save failed')) : resolve()), 700);
+      });
+      if (active.current) {
+        closeRef.current?.click();
+      }
+    } catch {
+      if (active.current) {
+        setFailed(true);
+      }
+    } finally {
+      if (active.current) {
+        setPending(false);
+      }
+    }
+  };
+
+  let message = 'A successful save clicks the native close button.';
+  if (pending) {
+    message = 'Saving…';
+  } else if (failed) {
+    message = 'Save failed. The modal stays open; retry when ready.';
+  }
+
+  return (
+    <Placeholder
+      header="Save before closing"
+      description={(
+        <Text Component="p" role={failed ? 'alert' : 'status'}>
+          {message}
+        </Text>
+      )}
+      action={(
+        <List>
+          <Button stretched loading={pending} disabled={pending} onClick={() => save(false)}>Save and close</Button>
+          <Button stretched mode="plain" disabled={pending} onClick={() => save(true)}>Simulate failed save</Button>
+          <Modal.Close ref={closeRef} aria-label="Close save form"><Button stretched mode="plain">Close</Button></Modal.Close>
+        </List>
+      )}
+    />
+  );
+};
+
+export const AsyncClose: Story = {
+  argTypes: hideControls('open'),
+  render: () => {
+    const [lastChange, setLastChange] = useState('Not opened yet');
+
+    return (
+      <div>
+        <Modal
+          trigger={<Button>Open async form</Button>}
+          header={<Modal.Header>Save changes</Modal.Header>}
+          onOpenChange={(open) => setLastChange(open ? 'Opened' : 'Closed')}
+        >
+          <AsyncCloseContent />
+        </Modal>
+        <Text Component="p" role="status">{lastChange}</Text>
+      </div>
+    );
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `import { useEffect, useRef, useState } from 'react';
+import '@telegram-apps/telegram-ui/dist/styles.css';
+import { AppRoot, Button, List, Modal, Placeholder, Text } from '@telegram-apps/telegram-ui';
+
+const AsyncCloseContent = () => {
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const active = useRef(true);
+  const [pending, setPending] = useState(false);
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    active.current = true;
+    return () => { active.current = false; };
+  }, []);
+
+  const save = async (reject: boolean) => {
+    setPending(true);
+    setFailed(false);
+    try {
+      await new Promise<void>((resolve, fail) => {
+        setTimeout(() => (reject ? fail(new Error('Save failed')) : resolve()), 700);
+      });
+      if (active.current) {
+        closeRef.current?.click();
+      }
+    } catch {
+      if (active.current) {
+        setFailed(true);
+      }
+    } finally {
+      if (active.current) {
+        setPending(false);
+      }
+    }
+  };
+
+  let message = 'A successful save clicks the native close button.';
+  if (pending) {
+    message = 'Saving…';
+  } else if (failed) {
+    message = 'Save failed. The modal stays open; retry when ready.';
+  }
+
+  return (
+    <Placeholder
+      header="Save before closing"
+      description={(
+        <Text Component="p" role={failed ? 'alert' : 'status'}>
+          {message}
+        </Text>
+      )}
+      action={(
+        <List>
+          <Button stretched loading={pending} disabled={pending} onClick={() => save(false)}>Save and close</Button>
+          <Button stretched mode="plain" disabled={pending} onClick={() => save(true)}>Simulate failed save</Button>
+          <Modal.Close ref={closeRef} aria-label="Close save form"><Button stretched mode="plain">Close</Button></Modal.Close>
+        </List>
+      )}
+    />
+  );
+};
+
+export function Example() {
+  const [lastChange, setLastChange] = useState('Not opened yet');
+  return (
+    <AppRoot>
+      <Modal
+        trigger={<Button>Open async form</Button>}
+        header={<Modal.Header>Save changes</Modal.Header>}
+        onOpenChange={(open) => setLastChange(open ? 'Opened' : 'Closed')}
+      >
+        <AsyncCloseContent />
+      </Modal>
+      <Text Component="p" role="status">{lastChange}</Text>
+    </AppRoot>
+  );
+}
+`,
+      },
+      description: {
+        story: [
+          'This trigger-owned modal has no open prop. Its content awaits a save, then clicks the ref forwarded to the native Close button.',
+          'Pending work leaves it open. A rejected save shows an error and permits retry; only success invokes the close path.',
+          'The normal close callback and trigger focus restoration still run. The dialog div ref is a separate API.',
+        ].join(' '),
+      },
+    },
   },
   decorators: [DecoratorFullScreen],
 };
