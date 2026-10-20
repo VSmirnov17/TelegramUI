@@ -110,8 +110,8 @@ export const WithCloseButton: Story = {
 
 export const SnapPoints: Story = {
   parameters: {
-    // Snap offsets use the window height; give this Docs example its own preview viewport.
-    docs: { story: { inline: false, height: 'min(600px, 80vh)' } },
+    // Snap offsets use the window height; keep the inline Docs containing block viewport-sized.
+    docs: { story: { inline: true, height: '96vh' } },
   },
   args: {
     ...Playground.args,
