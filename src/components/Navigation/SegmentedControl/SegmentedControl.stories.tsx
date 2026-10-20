@@ -9,6 +9,22 @@ const meta = {
   title: 'Navigation/SegmentedControl',
   component: SegmentedControl,
   argTypes: hideControls('children'),
+  parameters: {
+    docs: {
+      source: {
+        transform: (code: string) => code.replace(/(<\/?)SegmentedControlItem(?=[\s/>])/g, '$1SegmentedControl.Item'),
+      },
+      description: {
+        component: [
+          'SegmentedControl inherits its appearance and colors from AppRoot. Wrap your app in AppRoot so it can follow Telegram or the browser theme.',
+          'Automatic detection starts with base/light during server rendering and hydration, then updates on the client.',
+          'If your server already knows the appearance, pass the same value on the server and client.',
+          'The track and selected segment use the AppRoot surface tokens, which follow Telegram CSS colors when available.',
+          'To force a library palette regardless of Telegram colors, use `<AppRoot appearance="dark" ignoreTelegramTheme>`.',
+        ].join(' '),
+      },
+    },
+  },
 } satisfies Meta<typeof SegmentedControl>;
 
 export default meta;

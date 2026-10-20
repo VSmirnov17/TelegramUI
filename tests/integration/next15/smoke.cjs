@@ -7,6 +7,7 @@ const { setTimeout: delay } = require('node:timers/promises');
 const verifyModalResize = require('./modal-resize.cjs');
 const verifyModalFocus = require('./modal-focus.cjs');
 const verifyAppRootPalette = require('./app-root-palette.cjs');
+const { verifySegmentedControl } = require('./segmented-theme.cjs');
 
 const fixture = __dirname;
 const root = path.resolve(fixture, '../../..');
@@ -263,6 +264,7 @@ async function main() {
         });
         await verify(browser, mode);
         await verifyAppRootPalette(browser, url, mode);
+        await verifySegmentedControl(browser, url, mode);
       } catch (error) {
         console.error(server.output());
         throw error;
