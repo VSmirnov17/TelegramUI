@@ -143,6 +143,43 @@
   /* End of custom lib tokens */
 }
 
+/* Keep Telegram variables available to SDK consumers while selecting library colors. */
+.wrapper--ignore-telegram-theme {
+  --tgui--bg_color: #FFFFFF;
+  --tgui--text_color: #000000;
+  --tgui--hint_color: #707579;
+  --tgui--link_color: #007AFF;
+  --tgui--button_color: #007AFF;
+  --tgui--button_text_color: #FFFFFF;
+  --tgui--secondary_bg_color: #EFEFF4;
+  --tgui--header_bg_color: #FFFFFF;
+  --tgui--accent_text_color: #007AFF;
+  --tgui--section_bg_color: #FFFFFF;
+  --tgui--section_header_text_color: #707579;
+  --tgui--subtitle_text_color: #707579;
+  --tgui--destructive_text_color: #E53935;
+  --tgui--tertiary_bg_color: #F4F4F7;
+  --tgui--segmented_control_active_bg: #FFFFFF;
+}
+
+.wrapper--ignore-telegram-theme.wrapper--dark {
+  --tgui--bg_color: #212121;
+  --tgui--text_color: #FFFFFF;
+  --tgui--hint_color: #AAAAAA;
+  --tgui--link_color: #2990FF;
+  --tgui--button_color: #2990FF;
+  --tgui--button_text_color: #FFFFFF;
+  --tgui--secondary_bg_color: #0F0F0F;
+  --tgui--header_bg_color: #212121;
+  --tgui--accent_text_color: #007AFF;
+  --tgui--section_bg_color: #212121;
+  --tgui--section_header_text_color: #AAAAAA;
+  --tgui--subtitle_text_color: #AAAAAA;
+  --tgui--destructive_text_color: #E53935;
+  --tgui--tertiary_bg_color: #2A2A2A;
+  --tgui--segmented_control_active_bg: #2F2F2F;
+}
+
 @media (min-resolution: 2dppx) {
   .wrapper {
     --tgui--border--width: .5px;

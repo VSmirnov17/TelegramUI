@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, HTMLAttributes } from 'react';
+import { forwardRef, HTMLAttributes, useContext } from 'react';
 import styles from './AppRoot.module.css';
 
 import { classNames } from 'helpers/classNames';
@@ -17,6 +17,8 @@ export interface AppRootProps extends HTMLAttributes<HTMLDivElement> {
   platform?: AppRootContextInterface['platform'];
   /** Application appearance. Auto-detection uses light during SSR/hydration, then follows Telegram or the browser theme. */
   appearance?: AppRootContextInterface['appearance'];
+  /** Use library colors for the selected appearance instead of Telegram CSS variables. Inherits from the parent AppRoot; false restores Telegram colors. */
+  ignoreTelegramTheme?: boolean;
   /** Rewriting portal container for rendering, AppRoot container as default */
   portalContainer?: AppRootContextInterface['portalContainer'];
 }
@@ -24,11 +26,14 @@ export interface AppRootProps extends HTMLAttributes<HTMLDivElement> {
 export const AppRoot = forwardRef<HTMLDivElement, AppRootProps>(({
   platform: platformProp,
   appearance: appearanceProp,
+  ignoreTelegramTheme: ignoreTelegramThemeProp,
   portalContainer: portalContainerProp,
   children,
   className,
   ...restProps
 }, ref) => {
+  const parentContext = useContext(AppRootContext);
+  const ignoreTelegramTheme = ignoreTelegramThemeProp ?? parentContext.ignoreTelegramTheme ?? false;
   const appearance = useAppearance(appearanceProp);
   const portalContainer = usePortalContainer(portalContainerProp);
   const platform = usePlatform(platformProp);
@@ -36,6 +41,7 @@ export const AppRoot = forwardRef<HTMLDivElement, AppRootProps>(({
   const contextValue = useObjectMemo({
     platform,
     appearance,
+    ignoreTelegramTheme,
     portalContainer,
     isRendered: true,
   });
@@ -47,6 +53,7 @@ export const AppRoot = forwardRef<HTMLDivElement, AppRootProps>(({
         styles.wrapper,
         platform === 'ios' && styles['wrapper--ios'],
         appearance === 'dark' && styles['wrapper--dark'],
+        ignoreTelegramTheme && styles['wrapper--ignore-telegram-theme'],
         className,
       )}
       {...restProps}

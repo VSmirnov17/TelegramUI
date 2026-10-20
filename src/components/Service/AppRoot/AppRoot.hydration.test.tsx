@@ -13,6 +13,7 @@ jest.mock('./AppRoot.module.css', () => ({
   wrapper: 'root',
   'wrapper--ios': 'ios',
   'wrapper--dark': 'dark',
+  'wrapper--ignore-telegram-theme': 'library-colors',
 }));
 // The browser server-rendering entry needs TextEncoder, which jsdom does not expose.
 jest.mock('react-dom/server', () => jest.requireActual('react-dom/server.node'));
@@ -172,5 +173,27 @@ describe('AppRoot hydration', () => {
     });
     expect(Array.from(container.querySelectorAll('[data-context]'), (node) => node.textContent)).toEqual(['base/light', 'ios/dark']);
     expect(onEvent).not.toHaveBeenCalled();
+  });
+
+  it('hydrates the library palette option, including inherited and explicit false roots', async () => {
+    const tree = (ignoreTelegramTheme: boolean) => (
+      <AppRoot appearance="light" ignoreTelegramTheme={ignoreTelegramTheme}>
+        <AppRoot data-testid="palette-inherited"><ContextValue /></AppRoot>
+        <AppRoot data-testid="palette-reset" ignoreTelegramTheme={false}><ContextValue /></AppRoot>
+      </AppRoot>
+    );
+    const element = tree(true);
+    container.innerHTML = renderToString(element);
+    const inherited = container.querySelector('[data-testid="palette-inherited"]');
+    const reset = container.querySelector('[data-testid="palette-reset"]');
+    connectTelegram();
+    await hydrate(element);
+
+    expect(inherited?.className).toBe('root ios library-colors');
+    expect(reset?.className).toBe('root ios');
+    await act(async () => root!.render(tree(false)));
+    expect(inherited?.className).toBe('root ios');
+    expect(container.querySelector('[data-testid="palette-inherited"]')).toBe(inherited);
+    expect(container.querySelector('[data-testid="palette-reset"]')).toBe(reset);
   });
 });

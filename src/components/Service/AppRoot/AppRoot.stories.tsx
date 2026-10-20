@@ -19,7 +19,10 @@ const meta = {
         component: [
           'Wrap your app in AppRoot to provide platform, appearance, and portal context.',
           'Telegram CSS variables supply theme colors; library defaults apply when those variables are absent.',
-          'Automatic detection uses base/light during server rendering and hydration, then reads Telegram or the browser theme. Pass the same explicit platform and appearance on the server and client to render the desired variant immediately.',
+          'Set ignoreTelegramTheme to use the library palette for the selected appearance even inside Telegram.',
+          'Nested AppRoot components inherit this option; pass false to restore Telegram colors. Inline --tgui--* overrides still apply.',
+          'Automatic detection uses base/light during server rendering and hydration, then reads Telegram or the browser theme.',
+          'Pass the same explicit platform and appearance on the server and client to render the desired variant immediately.',
           'Use the toolbar to switch Platform and Theme, then compare the palettes below.',
         ].join(' '),
       },
@@ -42,10 +45,15 @@ const PALETTES = {
   },
 };
 
-const ThemePreview = ({ initialPalette = 'Inherited', ...props }: AppRootProps & { initialPalette?: Palette }) => {
+const ThemePreview = ({ initialPalette = 'Inherited', opposingPalette = false, ...props }: AppRootProps & { initialPalette?: Palette; opposingPalette?: boolean }) => {
   const [palette, setPalette] = useState<Palette>(initialPalette);
   const [view, setView] = useState('Week');
-  const colors = palette === 'Inherited' ? undefined : PALETTES[palette][props.appearance === 'dark' ? 'dark' : 'light'];
+  const [ignoreTelegramTheme, setIgnoreTelegramTheme] = useState(true);
+  const inactivePaletteMode = opposingPalette ? 'plain' : 'gray';
+  const requestedAppearance = props.appearance === 'dark' ? 'dark' : 'light';
+  const oppositeAppearance = requestedAppearance === 'dark' ? 'light' : 'dark';
+  const incomingAppearance = opposingPalette ? oppositeAppearance : requestedAppearance;
+  const colors = palette === 'Inherited' ? undefined : PALETTES[palette][incomingAppearance];
   const themeStyle = colors ? {
     '--tg-theme-bg-color': colors.background,
     '--tg-theme-secondary-bg-color': colors.secondary,
@@ -62,19 +70,32 @@ const ThemePreview = ({ initialPalette = 'Inherited', ...props }: AppRootProps &
   } as CSSProperties : {};
 
   return (
-    <AppRoot {...props} style={{ ...themeStyle, ...props.style }}>
+    <AppRoot {...props} ignoreTelegramTheme={opposingPalette ? ignoreTelegramTheme : props.ignoreTelegramTheme} style={{ ...themeStyle, ...props.style }}>
       <List style={{ width: 480, maxWidth: '100%', margin: 'auto', background: 'var(--tgui--secondary_bg_color)' }}>
         <div style={{ padding: 16 }}>
           <Title level="3" weight="2">Theme colors</Title>
           <Caption Component="p" style={{ color: 'var(--tgui--hint_color)', margin: '8px 0 16px' }}>
-            Compare inherited colors with two sample Telegram palettes.
+            {opposingPalette
+              ? `Incoming Telegram colors are ${incomingAppearance}; requested appearance is ${props.appearance}. Toggle library colors to compare.`
+              : 'Compare inherited colors with two sample Telegram palettes.'}
           </Caption>
+          {opposingPalette && (
+            <Button
+              size="s"
+              aria-pressed={ignoreTelegramTheme}
+              mode="filled"
+              onClick={() => setIgnoreTelegramTheme(!ignoreTelegramTheme)}
+              style={{ marginBottom: 8 }}
+            >
+              Use library colors
+            </Button>
+          )}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
             {(['Inherited', 'Telegram', 'Custom'] as const).map((name) => (
               <Button
                 key={name}
                 size="s"
-                mode={palette === name ? 'filled' : 'gray'}
+                mode={palette === name ? 'filled' : inactivePaletteMode}
                 aria-pressed={palette === name}
                 onClick={() => setPalette(name)}
               >
@@ -107,7 +128,7 @@ const ThemePreview = ({ initialPalette = 'Inherited', ...props }: AppRootProps &
             Switch palettes to compare the track with the selected segment.
           </Caption>
           <Caption Component="p" role="status" style={{ color: 'var(--tgui--hint_color)', marginTop: 12 }}>
-            {palette} palette · {props.appearance}
+            {palette} palette · {props.appearance}{opposingPalette && ` · ${ignoreTelegramTheme ? 'Library colors' : 'Telegram colors'}`}
           </Caption>
         </div>
       </List>
@@ -148,6 +169,29 @@ export const TelegramTheme: Story = {
           'This preview supplies Telegram CSS variables locally. In a Mini App, Telegram supplies these values.',
           'Switch to Custom to check another palette without changing the library tokens.',
         ].join(' '),
+      },
+    },
+  },
+};
+
+export const ForcedAppearance: Story = {
+  argTypes: hideControls('ignoreTelegramTheme'),
+  render: (args, { globals }) => (
+    <ThemePreview {...args} initialPalette="Telegram" opposingPalette appearance={args.appearance ?? globals.theme} platform={args.platform ?? globals.platform} />
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: [
+          'The incoming Telegram palette deliberately opposes the requested appearance.',
+          'Toggle the color source, then switch the toolbar Theme to compare forced light and dark palettes.',
+          'The Telegram CSS variables remain available to other consumers.',
+        ].join(' '),
+      },
+      source: {
+        code: `<AppRoot appearance="light" ignoreTelegramTheme>
+  <MyApp />
+</AppRoot>`,
       },
     },
   },
