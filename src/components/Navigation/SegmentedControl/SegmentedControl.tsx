@@ -25,7 +25,7 @@ export const SegmentedControl = ({
 
   const childrenAsArray = Children.toArray(children);
   const checkedIndex = childrenAsArray.findIndex((option) => {
-    return isValidElement(option) && option.props.selected;
+    return isValidElement<SegmentedControlItemProps>(option) && option.props.selected;
   });
 
   const translateX = `translateX(${100 * checkedIndex}%)`;

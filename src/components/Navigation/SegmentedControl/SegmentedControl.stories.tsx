@@ -48,7 +48,7 @@ export const Playground: StoryObj<SegmentedControlProps> = {
   },
   decorators: [
     (Component) => (
-      <div style={{ width: 500 }}>
+      <div style={{ width: 500, maxWidth: '100%' }}>
         <Component />
       </div>
     ),

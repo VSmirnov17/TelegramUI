@@ -21,7 +21,7 @@ export const TabsList = ({
 }: TabsListProps) => {
   const childrenAsArray = Children.toArray(children);
   const checkedIndex = childrenAsArray.findIndex((option) => {
-    return isValidElement(option) && option.props.selected;
+    return isValidElement<TabsItemProps>(option) && option.props.selected;
   });
 
   const translateX = `translateX(${100 * checkedIndex}%)`;

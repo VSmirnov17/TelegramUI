@@ -5,7 +5,7 @@ import { createContext, RefObject } from 'react';
 export interface AppRootContextInterface {
   platform?: 'base' | 'ios';
   appearance?: 'light' | 'dark';
-  portalContainer?: RefObject<HTMLDivElement>;
+  portalContainer?: RefObject<HTMLDivElement | null>;
   isRendered: boolean;
 }
 

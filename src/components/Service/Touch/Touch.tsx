@@ -116,7 +116,7 @@ export const Touch = ({
     },
     { capture: useCapture, passive: false },
   );
-  const containerRef = useRef();
+  const containerRef = useRef<HTMLElement | undefined>(undefined);
 
   useEnhancedEffect(() => {
     const el = containerRef.current;

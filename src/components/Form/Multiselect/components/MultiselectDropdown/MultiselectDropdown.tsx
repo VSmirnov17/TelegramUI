@@ -112,9 +112,9 @@ export const MultiselectDropdown = forwardRef<HTMLDivElement, MultiselectDropdow
                     return;
                   }
 
-                  closeDropdownAfterSelect && setOpened(false);
                   addOption(option);
                   clearInput();
+                  closeDropdownAfterSelect && setOpened(false);
                 },
                 onMouseEnter: () => setFocusedOptionIndex(index),
               },

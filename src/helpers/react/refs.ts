@@ -1,25 +1,39 @@
-import { MutableRefObject, Ref, RefObject } from 'react';
+import { MutableRefObject, Ref } from 'react';
 
-export const setRef = <T>(element: T, ref?: Ref<T>): void => {
-  if (ref) {
-    if (typeof ref === 'function') {
-      ref(element);
-    } else {
-      // eslint-disable-next-line no-param-reassign
-      (ref as MutableRefObject<T>).current = element;
-    }
+/** Attach a ref and return its matching detach operation. */
+export const setRef = <T>(element: T | null, ref?: Ref<T>): (() => void) => {
+  if (typeof ref === 'function') {
+    // React 18 types accept void callbacks; React 19 also accepts cleanup.
+    const cleanup: unknown = ref(element);
+    return typeof cleanup === 'function' ? () => { cleanup(); } : () => { ref(null); };
   }
+
+  if (ref) {
+    // eslint-disable-next-line no-param-reassign
+    (ref as MutableRefObject<T | null>).current = element;
+  }
+  return () => {
+    if (ref) {
+      // eslint-disable-next-line no-param-reassign
+      (ref as MutableRefObject<T | null>).current = null;
+    }
+  };
 };
 
-export const multipleRef = <T>(...refs: Array<Ref<T> | undefined>): RefObject<T> => {
+export const multipleRef = <T>(...refs: Array<Ref<T> | undefined | false>): MutableRefObject<T | null> => {
   let current: T | null = null;
+  let detach: Array<() => void> = [];
   return {
     get current() {
       return current;
     },
     set current(element) {
+      detach.forEach((cleanup) => cleanup());
+      detach = [];
       current = element;
-      refs.forEach((ref) => ref && setRef(element, ref));
+      if (element !== null) {
+        detach = refs.map((ref) => setRef(element, ref || undefined));
+      }
     },
   };
 };
