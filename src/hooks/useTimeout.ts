@@ -12,7 +12,7 @@ export const useTimeout = (callbackFunction: () => void, duration: number) => {
     options.current.duration = duration;
   }, [callbackFunction, duration]);
 
-  const timeout = useRef<ReturnType<typeof setTimeout>>();
+  const timeout = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const clear = useCallback(() => clearTimeout(timeout?.current), []);
 

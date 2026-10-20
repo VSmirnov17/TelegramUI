@@ -9,7 +9,7 @@ import { isElement } from '@floating-ui/utils/dom';
  * If the click is outside the given refs, the callback will be called
  */
 export const useGlobalClicks = <
-  T extends RefObject<ElementType> | undefined | null,
+  T extends RefObject<ElementType | null> | undefined | null,
   ElementType extends Element = Element,
 >(
   callback: (event: MouseEvent) => void,
@@ -17,7 +17,7 @@ export const useGlobalClicks = <
 ) => {
   useEnhancedEffect(() => {
     const hasNotNullRefs = refs.some((ref) => ref && ref.current !== null);
-    if (!document || !hasNotNullRefs) {
+    if (typeof document === 'undefined' || !hasNotNullRefs) {
       return () => {};
     }
 
@@ -36,5 +36,5 @@ export const useGlobalClicks = <
     });
 
     return () => document.removeEventListener('click', handleClick, true);
-  }, [document, callback, ...refs]);
+  }, [callback, ...refs]);
 };

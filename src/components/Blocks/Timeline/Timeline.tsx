@@ -53,7 +53,7 @@ export const Timeline = ({
       {...restProps}
     >
       {Children.map(children, (child, index) => {
-        if (isValidElement(child)) {
+        if (isValidElement<TimelineItemProps>(child)) {
           return cloneElement(child, {
             mode: getChildMode(index + 1),
             horizontal,

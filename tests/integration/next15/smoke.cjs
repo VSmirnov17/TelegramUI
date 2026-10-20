@@ -67,6 +67,7 @@ async function verify(browser, mode) {
   assert.match(html, /data-testid="auto"/);
   assert.match(html, /Server draft/);
   assert.match(html, /Packed library in Next 15/);
+  assert.match(html, /aria-label="Ref lifecycle"/);
   assert.match(html, /data-hydrated="false"/);
   assert.match(html, /<link[^>]+\.css/);
 
@@ -82,6 +83,7 @@ async function verify(browser, mode) {
     });
     await page.addInitScript((source) => {
       window.__themeListeners = new Set();
+      window.__refLifecycle = [];
       if (source === 'telegram') {
         window.Telegram = { WebApp: {
           platform: 'ios', colorScheme: 'dark', themeParams: {},
@@ -187,8 +189,17 @@ async function verify(browser, mode) {
       await dialog.getByRole('button', { name: 'Done', exact: true }).click();
       await dialog.waitFor({ state: 'hidden' });
       assert.equal(await page.getByRole('button', { name: 'Open form', exact: true }).evaluate((node) => document.activeElement === node), true);
+      // Cleanup-returning callbacks must survive the library's merged object refs.
+      // Ignore React StrictMode's development mount probe and inspect actual transitions.
+      await page.evaluate(() => { window.__refLifecycle = []; });
+      await page.getByRole('button', { name: 'Replace callback ref', exact: true }).click();
+      assert.equal(await page.evaluate(() => window.__refLifecycle.filter((event) => event === 'first cleaned').length), 1);
+      assert.equal(await page.evaluate(() => window.__refLifecycle.filter((event) => event === 'second attached').length), 1);
+      await page.evaluate(() => { window.__refLifecycle = []; });
+      await page.getByRole('button', { name: 'Unmount callback refs', exact: true }).click();
+      assert.deepEqual(await page.evaluate(() => [...window.__refLifecycle].sort()), ['legacy null', 'second cleaned']);
       assert.deepEqual(errors, [], 'Browser console and runtime must be error-free (including hydration warnings)');
-      console.log(`PASS Next 15 ${mode}: ${source}, SSR, preserved hydration, theme, input, click, Modal and Multiselect`);
+      console.log(`PASS Next 15 ${mode}: ${source}, SSR, preserved hydration, theme, input, click, Modal, Multiselect and callback ref cleanup`);
     } catch (error) {
       console.error({ mode, source, browserErrors: errors });
       throw error;
@@ -209,6 +220,9 @@ async function main() {
     run(['ci', '--no-audit', '--no-fund']);
     run(['install', '--no-save', '--package-lock=false', '--no-audit', '--no-fund', path.join(directory, archives[0])]);
     run(['ls', 'react', 'react-dom', '@telegram-apps/telegram-ui']);
+    // Packed snapshots share a version; Next treats node_modules as immutable.
+    // Discard compiled code from a previously installed library archive.
+    rmSync(path.join(fixture, '.next'), { recursive: true, force: true });
     const { chromium } = require('playwright');
     for (const mode of ['dev', 'start']) {
       if (mode === 'start') {

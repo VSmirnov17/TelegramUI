@@ -42,6 +42,8 @@ yarn add @telegram-apps/telegram-ui
 pnpm add @telegram-apps/telegram-ui
 ```
 
+React and React DOM 18.2 or later in the 18.x line, or 19.x, are supported. TypeScript projects need `@types/react` 18.3 or later in the 18.x line, or 19.x. The React types peer is optional for JavaScript projects.
+
 ## Usage
 
 ```jsx static
@@ -189,7 +191,7 @@ To check an existing build without rebuilding, run `npm run check:package`. Avoi
 
 ### Next 15 / React 19 runtime verification
 
-Run `npm run test:next15` to verify the packed library in an isolated Next 15 App Router consumer with React 19, in development and production. See the [fixture instructions](tests/integration/next15/README.md) for browser setup and the tested scope. The fixture is JavaScript; this runtime check does not establish React 19 TypeScript declaration compatibility.
+Run `npm run test:next15` to verify the packed library in an isolated Next 15 App Router consumer with React 19, in development and production. See the [fixture instructions](tests/integration/next15/README.md) for browser setup and the tested scope. The fixture also checks cleanup-returning callback refs. Run `npm run test:react-types` for strict public declaration and implementation checks against React 18 and React 19 types; see the [type fixture instructions](tests/integration/react-types/README.md).
 
 ## License
 This Telegram UI Kit is available under the [MIT License](https://opensource.org/license/mit). Use it freely in both personal and commercial projects.

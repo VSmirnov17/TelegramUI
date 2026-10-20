@@ -1,7 +1,39 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { AppRoot, Button, Input, Modal, Multiselect, Section } from '@telegram-apps/telegram-ui';
+
+const RefLifecycle = () => {
+  const [phase, setPhase] = useState('first');
+  const first = useCallback((node) => {
+    if (node) {
+      window.__refLifecycle.push('first attached');
+      return () => { window.__refLifecycle.push('first cleaned'); };
+    }
+    window.__refLifecycle.push('first null');
+  }, []);
+  const second = useCallback((node) => {
+    if (node) {
+      window.__refLifecycle.push('second attached');
+      return () => { window.__refLifecycle.push('second cleaned'); };
+    }
+    window.__refLifecycle.push('second null');
+  }, []);
+  const legacy = useCallback((node) => {
+    window.__refLifecycle.push(node ? 'legacy attached' : 'legacy null');
+  }, []);
+  return (
+    <div>
+      {phase !== 'hidden' && (
+        <AppRoot platform="base" appearance="light" ref={phase === 'first' ? first : second}>
+          <Multiselect ref={legacy} value={[]} options={[]} aria-label="Ref lifecycle" />
+        </AppRoot>
+      )}
+      <button type="button" onClick={() => setPhase('second')}>Replace callback ref</button>
+      <button type="button" onClick={() => setPhase('hidden')}>Unmount callback refs</button>
+    </div>
+  );
+};
 
 const Consumer = () => {
   const [hydrated, setHydrated] = useState(false);
@@ -37,6 +69,7 @@ const Consumer = () => {
           </div>
         </Modal>
       </AppRoot>
+      <RefLifecycle />
       <AppRoot data-testid="explicit" platform="ios" appearance="dark">
         <AppRoot data-testid="explicit-inherited"><span>Explicit tree</span></AppRoot>
       </AppRoot>
