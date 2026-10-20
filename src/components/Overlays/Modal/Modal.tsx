@@ -20,6 +20,7 @@ import { FloatingPortalContext } from 'components/Service/RootRenderer/FloatingP
 import { ModalClose } from './components/ModalClose/ModalClose';
 import { ModalHeader } from './components/ModalHeader/ModalHeader';
 import { ModalOverlay } from './components/ModalOverlay/ModalOverlay';
+import { ModalContext } from './ModalContext';
 
 export interface ModalProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onAnimationEnd'> {
   /** Controls the displayed state of the modal, enabling external management. */
@@ -52,6 +53,8 @@ export interface ModalProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onAnim
 
 type ModalWithComponents = ForwardRefExoticComponent<ModalProps & RefAttributes<HTMLDivElement>> & {
   Header: typeof ModalHeader;
+  Title: typeof Drawer.Title;
+  Description: typeof Drawer.Description;
   Overlay: typeof Drawer.Overlay;
   Close: typeof ModalClose;
 };
@@ -60,6 +63,12 @@ type ModalWithComponents = ForwardRefExoticComponent<ModalProps & RefAttributes<
  * Modal component, providing a flexible dialog framework with customizable content and interaction models.
  * It leverages the Drawer component from 'vaul' for its base functionality, enhanced with additional properties
  * and behaviors specific to modal dialogues, such as overlay management and nested modals.
+ *
+ * Give every modal a meaningful title. Modal.Header children provide its accessible title
+ * automatically (visible on iOS, visually hidden on base). For headerless or custom-header
+ * layouts, render one Modal.Title instead. Do not nest Modal.Title inside Modal.Header.
+ * Modal.Title and the optional Modal.Description support asChild to reuse existing typography.
+ * Explicit aria-label or aria-labelledby values take precedence over the automatic title.
  */
 export const Modal = forwardRef<HTMLDivElement, ModalProps>(({
   overlayComponent = <ModalOverlay />,
@@ -113,15 +122,18 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(({
             event.preventDefault();
             (event.target as HTMLDivElement).focus();
           }}
+          {...(restProps['aria-label'] ? { 'aria-labelledby': undefined } : {})}
           {...restProps}
         >
-          <FloatingPortalContext.Provider value={floatingPortal}>
-            {header}
-            <div className={styles.body}>
-              {children}
-            </div>
-            <div ref={setFloatingPortal} data-tgui-modal-portal="" />
-          </FloatingPortalContext.Provider>
+          <ModalContext.Provider value>
+            <FloatingPortalContext.Provider value={floatingPortal}>
+              {header}
+              <div className={styles.body}>
+                {children}
+              </div>
+              <div ref={setFloatingPortal} data-tgui-modal-portal="" />
+            </FloatingPortalContext.Provider>
+          </ModalContext.Provider>
         </Drawer.Content>
       </Drawer.Portal>
     </Component>
@@ -129,5 +141,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(({
 }) as ModalWithComponents;
 
 Modal.Header = ModalHeader;
+Modal.Title = Drawer.Title;
+Modal.Description = Drawer.Description;
 Modal.Overlay = ModalOverlay;
 Modal.Close = ModalClose;
