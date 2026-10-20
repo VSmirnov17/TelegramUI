@@ -1,6 +1,6 @@
-import { useRef, useState } from 'react';
+import { useId, useRef, useState } from 'react';
 
-import { Decorator, Meta, StoryObj } from '@storybook/react';
+import type { Decorator, Meta, StoryObj } from '@storybook/react';
 import { Icon28Close } from 'icons/28/close';
 import { hideControls } from 'storybook/controls';
 
@@ -151,6 +151,7 @@ const MultiselectInModal = ({ nested, ...props }: ModalProps) => {
   const [value, setValue] = useState<MultiselectOption[]>([]);
   const [showHelp, setShowHelp] = useState(false);
   const helpRef = useRef<HTMLButtonElement>(null);
+  const helpTooltipId = useId();
 
   return (
     <Modal
@@ -183,8 +184,26 @@ const MultiselectInModal = ({ nested, ...props }: ModalProps) => {
           />
         </Section>
         <div style={{ padding: 16 }}>
-          <Button ref={helpRef} size="s" mode="plain" onClick={() => setShowHelp((shown) => !shown)}>Help</Button>
-          {showHelp && <Tooltip role="tooltip" targetRef={helpRef}>Choose every platform your app supports.</Tooltip>}
+          <Button
+            ref={helpRef}
+            aria-describedby={showHelp ? helpTooltipId : undefined}
+            size="s"
+            mode="plain"
+            onClick={() => setShowHelp((shown) => !shown)}
+          >
+            Help
+          </Button>
+          {showHelp && (
+            <Tooltip
+              id={helpTooltipId}
+              role="tooltip"
+              targetRef={helpRef}
+              placement="top-start"
+              style={{ maxWidth: 'calc(100% - 32px)', boxSizing: 'border-box' }}
+            >
+              Choose every platform your app supports.
+            </Tooltip>
+          )}
           <Modal.Close><Button stretched>Done</Button></Modal.Close>
         </div>
       </List>
