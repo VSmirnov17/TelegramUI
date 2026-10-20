@@ -13,6 +13,14 @@ const meta = {
   component: Modal,
   parameters: {
     docs: {
+      source: {
+        // Generated source should show the public aliases of the underlying dialog primitives.
+        transform: (code: string) => code
+          .replace(/(<\/?)DialogTitle(?=[\s/>])/g, '$1Modal.Title')
+          .replace(/(<\/?)DialogDescription(?=[\s/>])/g, '$1Modal.Description')
+          .replace(/(<\/?)ModalHeader(?=[\s/>])/g, '$1Modal.Header')
+          .replace(/(<\/?)ModalClose(?=[\s/>])/g, '$1Modal.Close'),
+      },
       description: {
         component: [
           'Give every modal a meaningful title. Modal.Header children automatically name the dialog on both platforms;',
