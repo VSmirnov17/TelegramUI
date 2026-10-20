@@ -188,6 +188,61 @@ Disable separators with `showDividers={false}` when using flex, grid, or gaps:
 
 See **Blocks → Section → With Gaps / Custom Layout** in Storybook for spaced fields, a responsive grid, and wrapping actions.
 
+## Font family
+
+Typography components use `--tgui--font-family`. Setting `fontFamily` on a parent does not override a descendant's own font declaration. Set the token on `AppRoot` to change the application's typography:
+
+```tsx
+import type { CSSProperties } from 'react';
+import { AppRoot } from '@telegram-apps/telegram-ui';
+
+const appFont: CSSProperties & { '--tgui--font-family': string } = {
+  '--tgui--font-family': 'Georgia, serif',
+};
+
+<AppRoot style={appFont}>{/* Your application */}</AppRoot>;
+```
+
+For a single section, define the token in a CSS module:
+
+```css
+/* Fonts.module.css */
+.customFont {
+  --tgui--font-family: Georgia, serif;
+}
+```
+
+```tsx
+import { useId, useRef, useState } from 'react';
+import { Banner, Button, Section, Tooltip } from '@telegram-apps/telegram-ui';
+import styles from './Fonts.module.css';
+
+// Render inside AppRoot.
+export function FontSection() {
+  const target = useRef<HTMLButtonElement>(null);
+  const tooltipId = useId();
+  const [shown, setShown] = useState(false);
+  return (
+    <Section className={styles.customFont} header="Actions">
+      <Banner header="Custom typography">
+        <Button ref={target} aria-describedby={shown ? tooltipId : undefined} onClick={() => setShown(!shown)}>
+          Toggle tooltip
+        </Button>
+      </Banner>
+      {shown && (
+        <Tooltip id={tooltipId} role="tooltip" targetRef={target} className={styles.customFont}>
+          Custom tooltip typography
+        </Tooltip>
+      )}
+    </Section>
+  );
+}
+```
+
+Tooltip normally portals into `AppRoot`, outside the section's DOM subtree. Apply the same token class to Tooltip when it should share a section's font. An app-level token already reaches that root's default portals. Other sections keep their existing font unless they inherit an override. Nested `AppRoot` components define their own default tokens; apply the override there too when needed.
+
+The named font must be available on the device or loaded with your own `@font-face` declaration. Keep a fallback family in the stack; setting the token does not download a font.
+
 ## Troubleshooting TON imports in Vite
 
 If adding `@ton/ton` leaves a blank page, check the browser console first. A `Buffer is not defined` error can occur before React renders: TON code uses the Node.js `Buffer` global, which Vite does not supply automatically. This error also reproduces without Telegram UI.

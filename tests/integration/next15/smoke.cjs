@@ -10,6 +10,7 @@ const verifyAppRootPalette = require('./app-root-palette.cjs');
 const { verifySegmentedControl } = require('./segmented-theme.cjs');
 const verifyTabbarLayout = require('./tabbar-layout.cjs');
 const verifyModalClose = require('./modal-close.cjs');
+const verifyFontFamily = require('./font-family.cjs');
 
 const fixture = __dirname;
 const root = path.resolve(fixture, '../../..');
@@ -269,6 +270,7 @@ async function main() {
         await verifySegmentedControl(browser, url, mode);
         await verifyTabbarLayout(browser, url, mode);
         await verifyModalClose(browser, url, mode);
+        await verifyFontFamily(browser, url, mode);
       } catch (error) {
         console.error(server.output());
         throw error;
