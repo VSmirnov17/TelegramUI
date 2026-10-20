@@ -69,6 +69,90 @@ const App = () => (
 export default App;
 ```
 
+## Pages with a Tabbar
+
+`Tabbar` is fixed at the bottom of the viewport and does not take up space in normal document flow.
+Render the active page next to it and reserve the panel's measured height at the end of the content, so the last row can scroll above the bar:
+
+```tsx
+import { useEffect, useRef, useState } from 'react';
+import { AppRoot, Tabbar, Icon28Devices, Icon28Chat } from '@telegram-apps/telegram-ui';
+import '@telegram-apps/telegram-ui/dist/styles.css';
+
+export function PageLayout() {
+  const panel = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState(0);
+  const [tab, setTab] = useState('devices');
+
+  useEffect(() => {
+    const element = panel.current;
+    if (!element) return;
+    const measure = () => setHeight(element.getBoundingClientRect().height);
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(element, { box: 'border-box' });
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <AppRoot>
+      <main style={{ paddingBottom: height + 16 }}>
+        {tab === 'devices' ? <p>Your devices</p> : <p>Your messages</p>}
+      </main>
+      <Tabbar ref={panel} aria-label="Main navigation">
+        <Tabbar.Item text="Devices" selected={tab === 'devices'} onClick={() => setTab('devices')}>
+          <Icon28Devices />
+        </Tabbar.Item>
+        <Tabbar.Item text="Chat" selected={tab === 'chat'} onClick={() => setTab('chat')}>
+          <Icon28Chat />
+        </Tabbar.Item>
+      </Tabbar>
+    </AppRoot>
+  );
+}
+```
+
+This layout lets the document scroll. If your app uses a bounded scroll container instead, give it an explicit height and vertical scrolling, and put the reserved bottom padding on its content. Keep one scroll owner; do not fix the whole page with `FixedLayout` or hide overflow without providing a scrollable content area.
+
+The measured border-box height already includes Tabbar's safe-area padding. Keep your Telegram bridge or SDK CSS-variable binding active and do not add the same inset again. `ResizeObserver` follows label, platform and bound inset changes. The extra 16px above is ordinary content spacing. **Layout → Tabbar → Measured Height** in Storybook also reserves 72px for its floating action; that extra clearance is not a required Tabbar inset.
+
+With React Router, place `Outlet` inside the padded `main` and keep `Tabbar` alongside it in the parent route layout. Derive selection from the current location so direct links and browser history stay in sync, rather than keeping a second tab state. For example, inside a router layout using React Router 7:
+
+```tsx
+import { Outlet, useLocation, useNavigate } from 'react-router';
+
+// Inside the layout, retain the ref/measurement setup above:
+const { pathname } = useLocation();
+const navigate = useNavigate();
+
+// Replace the layout's return value:
+return (
+  <AppRoot>
+    <main style={{ paddingBottom: height + 16 }}>
+      <Outlet />
+    </main>
+    <Tabbar ref={panel} aria-label="Main navigation">
+      <Tabbar.Item
+        text="Devices"
+        selected={pathname === '/devices' || pathname.startsWith('/devices/')}
+        onClick={() => navigate('/devices')}
+      >
+        <Icon28Devices />
+      </Tabbar.Item>
+      <Tabbar.Item
+        text="Chat"
+        selected={pathname === '/chat' || pathname.startsWith('/chat/')}
+        onClick={() => navigate('/chat')}
+      >
+        <Icon28Chat />
+      </Tabbar.Item>
+    </Tabbar>
+  </AppRoot>
+);
+```
+
+Use your route matching rules for nested pages. `Tabbar.Item` renders a button, so do not wrap it in `Link` or another interactive element. See React Router's [Outlet](https://reactrouter.com/api/components/Outlet), [useLocation](https://reactrouter.com/api/hooks/useLocation), and [useNavigate](https://reactrouter.com/api/hooks/useNavigate) documentation for router setup and APIs.
+
 ## Input styling
 
 Use `rootStyle` to customize the whole `Input` container, including its background, header, and icon areas.

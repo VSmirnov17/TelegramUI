@@ -18,13 +18,18 @@ const meta = {
     docs: {
       description: {
         component: [
-          'A bottom navigation bar. Forward a ref to its root div to measure its full height, including bottom padding.',
+          'A fixed bottom navigation bar that sits outside normal document flow; it does not reserve space for page content.',
+          'Render the selected page (or your router Outlet) alongside the Tabbar, and give the scrollable content bottom padding equal to the measured panel height.',
+          'Use one scroll owner: the document, or an explicitly bounded container with vertical scrolling.',
+          'Forward a ref to its root div to measure its full border-box height, including bottom padding.',
           'Use ResizeObserver when that height can change.',
           'Bottom padding adds the device and Telegram content insets from bound CSS variables.',
           'For each inset, official Telegram variables take priority over SDK viewport aliases.',
           'Without either device variable, the library safe-area token supplies the native env() fallback.',
           'Keep your Telegram bridge or SDK CSS-variable binding active so updates reach CSS without reading a getter during render.',
           'Apply safe-area padding once: an inline paddingBottom overrides the automatic padding.',
+          'For routing, derive selected from the current pathname or route match and call your router navigation function from the item onClick.',
+          'Tabbar.Item renders a button; do not wrap it in a link. Keep the Tabbar outside the routed page so it stays mounted.',
         ].join(' '),
       },
     },
@@ -154,6 +159,9 @@ export const MeasuredHeight: StoryObj<TabbarProps> = {
         story: [
           'The ref points to the actual Tabbar div. ResizeObserver tracks platform, label, and padding changes.',
           'The measured border-box height positions the floating button and reserves space after the content.',
+          'Switching tabs changes the rendered content. In a routed app, put the Outlet in that same content area and derive selection from the route.',
+          'The extra 72px in this example clears the floating action; it is not a required Tabbar inset.',
+          'Without a floating action, reserve the measured height plus your normal content spacing.',
           'This preview is contained so it does not cover other documentation examples.',
         ].join(' '),
       },
@@ -179,6 +187,7 @@ function Page() {
 
   return (
     <AppRoot>
+      {/* The document scrolls; reserve the panel plus floating-action clearance. */}
       <main style={{ paddingBottom: height + 72 }}>
         {tab === 'devices' ? 'Your devices' : 'Your messages'}
       </main>
