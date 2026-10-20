@@ -9,10 +9,9 @@ import { usePlatform } from 'hooks/usePlatform';
 
 import { Icon20ChevronDown } from 'icons/20/chevron_down';
 
-import { FormInput, FormPublicProps } from 'components/Form/FormInput/FormInput';
+import { FormInputText } from 'components/Form/FormInput/components/FormInputText';
 import { FormInputTitle } from 'components/Form/FormInput/components/FormInputTitle';
-import { Subheadline } from 'components/Typography/Subheadline/Subheadline';
-import { Text } from 'components/Typography/Text/Text';
+import { FormInput, FormPublicProps } from 'components/Form/FormInput/FormInput';
 
 export interface SelectProps extends Omit<FormPublicProps, 'after'>, SelectHTMLAttributes<HTMLSelectElement> {
   /** Field label: floating on base, displayed above the field on iOS. */
@@ -39,7 +38,6 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(({
   const generatedId = useId();
   const selectId = id ?? generatedId;
 
-  const TypographyComponent = platform === 'ios' ? Text : Subheadline;
   const select = (
     <FormInput
       header={header}
@@ -51,7 +49,7 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(({
         className,
       )}
     >
-      <TypographyComponent
+      <FormInputText
         Component="select"
         id={selectId}
         className={styles.select}

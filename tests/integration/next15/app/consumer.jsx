@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { AppRoot, Button, Input, Modal, Multiselect, Section } from '@telegram-apps/telegram-ui';
+import { AppRoot, Button, Cell, Input, Modal, Multiselect, Section } from '@telegram-apps/telegram-ui';
 
 const RefLifecycle = () => {
   const [phase, setPhase] = useState('first');
@@ -38,6 +38,7 @@ const RefLifecycle = () => {
 const Consumer = () => {
   const [hydrated, setHydrated] = useState(false);
   const [count, setCount] = useState(0);
+  const [name, setName] = useState('');
   const [selected, setSelected] = useState([]);
   const [selectedAndClose, setSelectedAndClose] = useState([]);
   useEffect(() => setHydrated(true), []);
@@ -46,7 +47,12 @@ const Consumer = () => {
     <main data-hydrated={hydrated} style={{ maxWidth: 480, margin: 'auto' }}>
       <AppRoot data-testid="auto">
         <Section header="Packed library in Next 15">
-          <input aria-label="Draft" defaultValue="Server draft" />
+          <Cell description="Rendered on the server">
+            <Input aria-label="Draft" defaultValue="Server draft" />
+          </Cell>
+          <Cell>
+            <Input aria-label="Cell name" value={name} onChange={(event) => setName(event.target.value)} />
+          </Cell>
           <Input aria-label="Library input" defaultValue="Library draft" />
           <Button onClick={() => setCount(count + 1)}>Count: {count}</Button>
         </Section>

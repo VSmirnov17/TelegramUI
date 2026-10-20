@@ -112,7 +112,7 @@ async function verify(browser, mode) {
       const serverState = await page.evaluate(() => {
         const nodes = ['auto', 'inherited', 'override', 'explicit', 'explicit-inherited'].map((id) => document.querySelector(`[data-testid="${id}"]`));
         const input = document.querySelector('input[aria-label="Draft"]');
-        window.__serverNodes = { nodes, input };
+        window.__serverNodes = { nodes, input, cellNodes: [...document.querySelector('[data-tgui-cell]').querySelectorAll('*')].filter((node) => node.getAttribute('aria-hidden') !== 'true') };
         input.value = 'Typed before hydration';
         input.focus();
         input.setSelectionRange(2, 7);
@@ -132,10 +132,11 @@ async function verify(browser, mode) {
         return style.color === 'rgb(255, 255, 255)' && style.getPropertyValue('--tgui--text--line_height').trim() === (source === 'telegram' ? '22px' : '26px');
       }, source);
       assert.deepEqual(await page.evaluate(() => {
-        const { nodes, input } = window.__serverNodes;
+        const { nodes, input, cellNodes } = window.__serverNodes;
         return {
           sameNodes: nodes.every((node) => document.querySelector(`[data-testid="${node.dataset.testid}"]`) === node),
           sameInput: document.querySelector('input[aria-label="Draft"]') === input,
+          sameCellNodes: cellNodes.length > 0 && cellNodes.every((node) => node.isConnected),
           value: input.value, focused: document.activeElement === input,
           selection: [input.selectionStart, input.selectionEnd],
           inherited: getComputedStyle(nodes[1]).color,
@@ -147,6 +148,7 @@ async function verify(browser, mode) {
       }), {
         sameNodes: true,
         sameInput: true,
+        sameCellNodes: true,
         value: 'Typed before hydration',
         focused: true,
         selection: [2, 7],
@@ -157,6 +159,14 @@ async function verify(browser, mode) {
         explicitLineHeight: '22px',
       });
       await page.getByRole('textbox', { name: 'Draft', exact: true }).fill('Hydrated draft');
+      const cellInput = page.getByRole('textbox', { name: 'Cell name', exact: true });
+      const cellInputHandle = await cellInput.elementHandle();
+      await cellInput.click();
+      for (const key of 'Alice') {
+        await page.keyboard.press(key);
+        assert.equal(await cellInput.evaluate((node, handle) => node === handle && document.activeElement === node, cellInputHandle), true, `Cell Input keeps focus after typing ${key}`);
+      }
+      assert.equal(await cellInput.inputValue(), 'Alice');
       const libraryInput = page.getByRole('textbox', { name: 'Library input', exact: true });
       await libraryInput.fill('Library interaction');
       assert.equal(await libraryInput.inputValue(), 'Library interaction');
