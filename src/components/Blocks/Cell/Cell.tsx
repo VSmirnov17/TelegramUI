@@ -10,7 +10,7 @@ import { usePlatform } from 'hooks/usePlatform';
 import { BadgeProps } from 'components/Blocks/Badge/Badge';
 import { Tappable, TappableProps } from 'components/Service/Tappable/Tappable';
 import { Subheadline } from 'components/Typography/Subheadline/Subheadline';
-import { useTypographyCellComponents } from './hooks/useTypographyCellComponents';
+import { CellDescription, CellTitle } from './components/CellTypography/CellTypography';
 
 export interface CellProps extends Omit<TappableProps, 'Component'> {
   /** Content displayed above the main content as a subheading */
@@ -58,7 +58,6 @@ export const Cell = forwardRef(({
   ...restProps
 }: CellProps, ref) => {
   const platform = usePlatform();
-  const { Title, Description } = useTypographyCellComponents();
 
   const hasTitle = hasReactNode(children) || hasReactNode(hint) || hasReactNode(titleBadge);
   return (
@@ -84,11 +83,11 @@ export const Cell = forwardRef(({
             </Subheadline>
           )}
           {hasTitle && (
-            <Title className={styles.head}>
+            <CellTitle className={styles.head}>
               {hasReactNode(children) && <span className={styles.title}>{children}</span>}
               {hasReactNode(hint) && <span className={styles.hint}>{hint}</span>}
               {hasReactNode(titleBadge) && titleBadge}
-            </Title>
+            </CellTitle>
           )}
           {hasReactNode(subtitle) && (
             <Subheadline className={styles.subtitle} level="2" weight="3">
@@ -96,9 +95,9 @@ export const Cell = forwardRef(({
             </Subheadline>
           )}
           {hasReactNode(description) && (
-            <Description className={styles.description}>
+            <CellDescription className={styles.description}>
               {description}
-            </Description>
+            </CellDescription>
           )}
         </div>
         {hasReactNode(after) && <div className={styles.after}>{after}</div>}

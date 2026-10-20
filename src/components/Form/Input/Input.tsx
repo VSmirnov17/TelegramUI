@@ -6,9 +6,8 @@ import styles from './Input.module.css';
 import { classNames } from 'helpers/classNames';
 import { usePlatform } from 'hooks/usePlatform';
 
+import { FormInputText } from 'components/Form/FormInput/components/FormInputText';
 import { FormInput, FormPublicProps } from 'components/Form/FormInput/FormInput';
-import { Subheadline } from 'components/Typography/Subheadline/Subheadline';
-import { Text } from 'components/Typography/Text/Text';
 
 export interface InputProps extends FormPublicProps, InputHTMLAttributes<HTMLInputElement> {
   /** Styles for the whole form container, including its background, header, and icon areas. Use `style` for the native input. */
@@ -32,7 +31,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
 }, ref) => {
   const platform = usePlatform();
 
-  const TypographyComponent = platform === 'ios' ? Text : Subheadline;
   return (
     <FormInput
       header={header}
@@ -47,7 +45,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
         className,
       )}
     >
-      <TypographyComponent
+      <FormInputText
         ref={ref}
         Component="input"
         className={styles.input}

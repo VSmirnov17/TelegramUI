@@ -6,9 +6,8 @@ import styles from './Textarea.module.css';
 import { classNames } from 'helpers/classNames';
 import { usePlatform } from 'hooks/usePlatform';
 
+import { FormInputText } from 'components/Form/FormInput/components/FormInputText';
 import { FormInput, FormPublicProps } from 'components/Form/FormInput/FormInput';
-import { Subheadline } from 'components/Typography/Subheadline/Subheadline';
-import { Text } from 'components/Typography/Text/Text';
 
 export interface TextareaProps extends Omit<FormPublicProps, 'after' | 'before'>, TextareaHTMLAttributes<HTMLTextAreaElement> {}
 
@@ -25,7 +24,6 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(({
 }, ref) => {
   const platform = usePlatform();
 
-  const TypographyComponent = platform === 'ios' ? Text : Subheadline;
   return (
     <FormInput
       header={header}
@@ -36,7 +34,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(({
         className,
       )}
     >
-      <TypographyComponent
+      <FormInputText
         ref={ref}
         Component="textarea"
         className={styles.textarea}
