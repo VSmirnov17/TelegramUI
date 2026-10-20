@@ -102,6 +102,55 @@ Disable separators with `showDividers={false}` when using flex, grid, or gaps:
 
 See **Blocks → Section → With Gaps / Custom Layout** in Storybook for spaced fields, a responsive grid, and wrapping actions.
 
+## Troubleshooting TON imports in Vite
+
+If adding `@ton/ton` leaves a blank page, check the browser console first. A `Buffer is not defined` error can occur before React renders: TON code uses the Node.js `Buffer` global, which Vite does not supply automatically. This error also reproduces without Telegram UI.
+
+For this specific error, install the browser implementation of Buffer:
+
+```sh
+npm install buffer
+```
+
+Create `src/bootstrap.ts`:
+
+```ts
+import { Buffer } from 'buffer';
+
+Object.assign(globalThis, { Buffer });
+void import('./main');
+```
+
+Point the module script in `index.html` at this bootstrap instead of `src/main.tsx`:
+
+```html
+<script type="module" src="/src/bootstrap.ts"></script>
+```
+
+Keep your React entry point and TON imports in `src/main.tsx`. The dynamic import ensures Buffer is available before TON modules execute. A static `import './main'` executes its dependencies before the assignment and does not provide this ordering.
+
+For example, this renders a parsed address using Telegram UI from `src/main.tsx`:
+
+```tsx
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import { Address } from '@ton/ton';
+import { AppRoot, Cell } from '@telegram-apps/telegram-ui';
+import '@telegram-apps/telegram-ui/dist/styles.css';
+
+const address = Address.parse(`0:${'0'.repeat(64)}`).toString();
+
+createRoot(document.getElementById('root')!).render(
+  <AppRoot platform="base" appearance="light">
+    <Cell>{address}</Cell>
+  </AppRoot>,
+);
+```
+
+Verified with React/React DOM 18.2.0, Vite 5.4.21, `@ton/ton` 16.3.0 (`@ton/core` 0.63.1), and `buffer` 6.0.3 using this repository's Telegram UI 2.1.9 build. Address parsing and formatting passed in a production browser build with and without Telegram UI after the bootstrap was added. Other TON APIs may need additional browser support; this example only verifies address parsing and formatting.
+
+For a different error, include its full console stack, package versions, bundler configuration, and a minimal reproduction when reporting an issue.
+
 ## Icons
 
 Import icons alongside components from the package root:
