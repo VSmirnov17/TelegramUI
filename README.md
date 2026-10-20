@@ -322,6 +322,12 @@ Browse all available names and previews under **Icons → Catalog** in Storybook
 
 Contributions are welcome! To contribute, fork the repository, make your changes, and submit a pull request. We look forward to your innovative [ideas](https://github.com/Telegram-Mini-Apps/TelegramUI/pulls) and improvements.
 
+### Formatting configuration
+
+Run `npm run check:format-config` to verify Prettier configuration discovery and compatibility with the full ESLint configuration. It checks representative TSX and formatted Button, Input, and Section source in memory, including formatter/linter fixed points; it does not rewrite files or require the whole repository to be reformatted.
+
+Prettier uses single JavaScript quotes, double JSX attribute quotes, two-space indentation, semicolons, and multiline trailing commas. Its 180-column print width is a wrapping preference; ESLint still reports unbreakable lines over 180 columns. JSON retains its required double quotes, and the TypeScript ESLint rules do not validate CSS.
+
 ### Package verification
 
 Run `npm pack` to create a release archive. Its `prepack` hook cleans `dist`, runs the tests and builds JavaScript, declarations, and CSS. It then checks npm's package file list for every declared entry and `dist/styles.css`, rejecting missing or empty files before packaging or publishing.
