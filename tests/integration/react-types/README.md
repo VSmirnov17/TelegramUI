@@ -8,4 +8,6 @@ Button consumers also compile with TypeScript **5.3.3**. The isolated consumers 
 
 The README's font-family recipes compile under both TypeScript versions and React type sets, including the narrowly typed CSS custom property, scoped CSS-module class, native Button ref and Tooltip description relationship.
 
+The complete native date example also compiles in both matrices: controlled string values, native bounds/required validity, external labels, submit handling, and the actual HTMLInputElement focus ref. Disabled and read-only date inputs use the existing Input API.
+
 The complete implementation is also copied into each isolated consumer and compiled against its React types. This catches source-only incompatibilities such as missing `useRef` initializers and element props defaulting to `unknown`. Copies prevent the repository's React 18 development types from leaking into the React 19 check. Temporary files are removed on success or failure.

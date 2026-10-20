@@ -11,6 +11,7 @@ const { verifySegmentedControl } = require('./segmented-theme.cjs');
 const verifyTabbarLayout = require('./tabbar-layout.cjs');
 const verifyModalClose = require('./modal-close.cjs');
 const verifyFontFamily = require('./font-family.cjs');
+const verifyDateInput = require('./date-input.cjs');
 
 const fixture = __dirname;
 const root = path.resolve(fixture, '../../..');
@@ -271,6 +272,7 @@ async function main() {
         await verifyTabbarLayout(browser, url, mode);
         await verifyModalClose(browser, url, mode);
         await verifyFontFamily(browser, url, mode);
+        await verifyDateInput(browser, url, mode);
       } catch (error) {
         console.error(server.output());
         throw error;

@@ -169,6 +169,41 @@ The standard `style` prop applies to the native input element:
 
 See **Form → Input → Custom Background** in Storybook for default, error, and disabled examples.
 
+### Native date input
+
+Use `Input` with `type="date"` for native date entry. Keep a controlled value as an ISO date-only string (`YYYY-MM-DD`) or `''`, and pass native `min`, `max` and `required` constraints directly. Do not convert a date-only value through a timezone-dependent `Date` formatter.
+
+```tsx
+import { useId, useState } from 'react';
+import { Input, Text } from '@telegram-apps/telegram-ui';
+
+// Render inside AppRoot with the library stylesheet loaded.
+export function DateField() {
+  const id = useId();
+  const [date, setDate] = useState('2026-10-20');
+  return (
+    <>
+      <Text Component="label" htmlFor={id}>Appointment date</Text>
+      <Input
+        id={id}
+        type="date"
+        value={date}
+        min="2026-01-01"
+        max="2026-12-31"
+        required
+        onChange={(event) => setDate(event.currentTarget.value)}
+      />
+    </>
+  );
+}
+```
+
+The visible external label works on both platforms; Input's `header` is only shown on `base`. The browser and locale determine the displayed date and native picker UI; the platform/theme options do not emulate a mobile device's picker. Native validity does not automatically set the library's error status.
+
+Date inputs set their native `color-scheme` from the owning `AppRoot` appearance. An explicit `style.colorScheme` overrides it; use matching input colors when choosing a different scheme.
+
+See **Form → Input → Date** in Storybook for a complete form with native validation, an input focus ref, clear/reset controls, and disabled/read-only examples.
+
 ## Section layout
 
 `className` and `style` on `Section` apply to the outer section, including its header and footer.
