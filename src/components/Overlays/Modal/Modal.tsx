@@ -120,7 +120,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(({
           className={classNames(styles.wrapper, className)}
           onOpenAutoFocus={(event) => {
             event.preventDefault();
-            (event.target as HTMLDivElement).focus();
+            (event.target as HTMLDivElement).focus({ preventScroll: true });
           }}
           {...(restProps['aria-label'] ? { 'aria-labelledby': undefined } : {})}
           {...restProps}
