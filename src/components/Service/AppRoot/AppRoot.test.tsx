@@ -1,14 +1,16 @@
 import { renderToString } from 'react-dom/server';
 
 import { useAppRootContext } from 'hooks/useAppRootContext';
-import { AppRoot } from './AppRoot';
+
 import { getInitialAppearance } from './hooks/helpers/getInitialAppearance';
 import { getInitialPlatform } from './hooks/helpers/getInitialPlatform';
+import { AppRoot } from './AppRoot';
 
 jest.mock('./AppRoot.module.css', () => ({
   wrapper: 'root',
   'wrapper--ios': 'ios',
   'wrapper--dark': 'dark',
+  'wrapper--ignore-telegram-theme': 'library-colors',
 }));
 jest.mock('./hooks/helpers/getInitialAppearance');
 jest.mock('./hooks/helpers/getInitialPlatform');
@@ -51,6 +53,19 @@ describe('AppRoot server rendering', () => {
 
     expect(html.match(/class="root ios dark"/g)).toHaveLength(2);
     expect(html).toContain('ios<!-- -->/<!-- -->dark');
+  });
+
+  it('inherits the library palette option and allows a nested false reset', () => {
+    const html = renderToString(
+      <AppRoot appearance="dark" ignoreTelegramTheme>
+        <AppRoot data-testid="inherited" />
+        <AppRoot ignoreTelegramTheme={false} data-testid="telegram" />
+      </AppRoot>,
+    );
+
+    expect(html).toContain('class="root dark library-colors" data-testid="inherited"');
+    expect(html).toContain('class="root dark" data-testid="telegram"');
+    expect(html).not.toContain('ignoreTelegramTheme=');
   });
 
   it('lets nested roots override inherited settings', () => {

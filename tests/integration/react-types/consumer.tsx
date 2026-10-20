@@ -16,7 +16,8 @@ export const Consumer = () => {
   const [value, setValue] = useState('');
   const [open, setOpen] = useState(false);
   return (
-    <AppRoot portalContainer={portal}>
+    <AppRoot portalContainer={portal} appearance="light" ignoreTelegramTheme>
+      <AppRoot ignoreTelegramTheme={false} />
       <AppRoot ref={(node) => {
         node?.setAttribute('data-attached', 'true');
         return () => { node?.removeAttribute('data-attached'); };
@@ -53,3 +54,6 @@ const invalidChange = <Input onChange={(value: string) => value} />;
 const invalidModalTitle = <Modal.Title ref={createRef<SVGSVGElement>()}>Title</Modal.Title>;
 // @ts-expect-error a modal description forwards a paragraph ref
 const invalidModalDescription = <Modal.Description ref={createRef<SVGSVGElement>()}>Description</Modal.Description>;
+
+// @ts-expect-error the Telegram palette option must be boolean
+const invalidTelegramTheme = <AppRoot ignoreTelegramTheme="true" />;
