@@ -10,15 +10,19 @@
   ],
   "sideEffects": [
     "./dist/index.js",
-    "./dist/cjs/index.js"
+    "./dist/cjs/index.js",
+    "./dist/**/*.css"
   ],
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=7.0.0"
   },
   "scripts": {
-    "build": "concurrently \"npm run build:test\" \"npm run build:types\" \"npm run build:js-css\"",
-    "build:test": "jest",
+    "build": "npm run clean && concurrently \"npm run build:test\" \"npm run build:types\" \"npm run build:js-css\"",
+    "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
+    "prepack": "npm run build && npm run check:package",
+    "check:package": "node scripts/check-package.cjs",
+    "build:test": "jest && node --test scripts/check-package.test.cjs",
     "build:types": "concurrently 'npm run tsc:*'",
     "build:js-css": "concurrently \"npm run swc:*\" \"npm run postcss\"",
     "postcss": "webpack --config webpack.styles.config.js",

@@ -132,6 +132,12 @@ Browse all available names and previews under **Icons → Catalog** in Storybook
 
 Contributions are welcome! To contribute, fork the repository, make your changes, and submit a pull request. We look forward to your innovative [ideas](https://github.com/Telegram-Mini-Apps/TelegramUI/pulls) and improvements.
 
+### Package verification
+
+Run `npm pack` to create a release archive. Its `prepack` hook cleans `dist`, runs the tests and builds JavaScript, declarations, and CSS. It then checks npm's package file list for every declared entry and `dist/styles.css`, rejecting missing or empty files before packaging or publishing.
+
+To check an existing build without rebuilding, run `npm run check:package`. Avoid `--ignore-scripts` when preparing a release, as it bypasses the build and verification hook.
+
 ## License
 This Telegram UI Kit is available under the [MIT License](https://opensource.org/license/mit). Use it freely in both personal and commercial projects.
 
