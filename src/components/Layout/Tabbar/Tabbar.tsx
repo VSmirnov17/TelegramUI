@@ -25,6 +25,8 @@ type TabbarWithComponents = ForwardRefExoticComponent<TabbarProps & RefAttribute
  *
  * The component adapts its styling based on the platform, providing a consistent look and feel across different devices.
  * The forwarded ref points to the root div. Observe it with ResizeObserver to keep floating content above the tab bar as its height changes.
+ * Bottom padding follows Telegram's bound safe-area CSS variables, with SDK aliases and the library's native inset as fallbacks.
+ * The measured height includes this padding; avoid applying the same safe-area inset again on the Tabbar.
  */
 export const Tabbar = forwardRef<HTMLDivElement, TabbarProps>(({
   children,
