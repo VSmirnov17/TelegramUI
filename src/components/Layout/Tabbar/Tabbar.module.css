@@ -4,9 +4,18 @@
 
   box-shadow: 0 -1px 0 var(--tgui--divider);
   background: var(--tgui--surface_primary);
-  padding: 0 16px;
+  padding-inline: 16px;
+}
+
+/* Override FixedLayout's bottom padding regardless of stylesheet import order. */
+.wrapper.wrapper {
+  /* Telegram and SDK names are alternative sources, not additional insets. */
+  padding-bottom: calc(
+    var(--tg-safe-area-inset-bottom, var(--tg-viewport-safe-area-inset-bottom, var(--tgui--safe_area_inset_bottom, 0px)))
+    + var(--tg-content-safe-area-inset-bottom, var(--tg-viewport-content-safe-area-inset-bottom, 0px))
+  );
 }
 
 .wrapper--ios {
-  padding: 0;
+  padding-inline: 0;
 }

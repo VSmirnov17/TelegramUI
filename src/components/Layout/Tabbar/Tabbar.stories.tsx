@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { CSSProperties, useEffect, useRef, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
 import { Icon28Chat } from 'icons/28/chat';
@@ -17,7 +17,15 @@ const meta = {
     layout: 'fullscreen',
     docs: {
       description: {
-        component: 'A bottom navigation bar. Forward a ref to its root div to measure its full height, including bottom padding. Use ResizeObserver when that height can change.',
+        component: [
+          'A bottom navigation bar. Forward a ref to its root div to measure its full height, including bottom padding.',
+          'Use ResizeObserver when that height can change.',
+          'Bottom padding adds the device and Telegram content insets from bound CSS variables.',
+          'For each inset, official Telegram variables take priority over SDK viewport aliases.',
+          'Without either device variable, the library safe-area token supplies the native env() fallback.',
+          'Keep your Telegram bridge or SDK CSS-variable binding active so updates reach CSS without reading a getter during render.',
+          'Apply safe-area padding once: an inline paddingBottom overrides the automatic padding.',
+        ].join(' '),
       },
     },
   },
@@ -190,6 +198,88 @@ function Page() {
     </AppRoot>
   );
 }`,
+      },
+    },
+  },
+};
+
+const SafeAreaTabbar = ({ fullscreen }: { fullscreen: boolean }) => {
+  const previewRef = useRef<HTMLDivElement>(null);
+  const [currentTab, setCurrentTab] = useState(tabs[0].id);
+
+  const setInset = (name: string, enabled: boolean) => {
+    previewRef.current?.style.setProperty(name, enabled ? '34px' : '0px');
+  };
+
+  return (
+    <div
+      ref={previewRef}
+      style={{
+        '--tg-safe-area-inset-bottom': '34px',
+        '--tg-content-safe-area-inset-bottom': '0px',
+        height: fullscreen ? '100dvh' : 440,
+        transform: 'translateZ(0)',
+        overflow: 'hidden',
+        background: 'var(--tgui--secondary_bg_color)',
+      } as CSSProperties}
+    >
+      <div style={{ height: '100%', overflowY: 'auto' }}>
+        <List style={{ paddingBottom: 160 }}>
+          <Section header="Safe area" footer="Toggle each inset to update the navigation padding. The tab bar stays mounted while CSS variables change.">
+            <Cell
+              after={(
+                <Switch
+                  defaultChecked
+                  aria-label="Device bottom inset"
+                  onChange={(event) => setInset('--tg-safe-area-inset-bottom', event.target.checked)}
+                />
+              )}
+            >
+              Device inset: 34px
+            </Cell>
+            <Cell
+              after={(
+                <Switch
+                  aria-label="Telegram content bottom inset"
+                  onChange={(event) => setInset('--tg-content-safe-area-inset-bottom', event.target.checked)}
+                />
+              )}
+            >
+              Content inset: 34px
+            </Cell>
+          </Section>
+        </List>
+      </div>
+      <Tabbar aria-label="Safe area navigation">
+        {tabs.map(({ id, text, Icon }) => (
+          <Tabbar.Item
+            key={id}
+            text={text}
+            aria-pressed={id === currentTab}
+            selected={id === currentTab}
+            onClick={() => setCurrentTab(id)}
+          >
+            <Icon />
+          </Tabbar.Item>
+        ))}
+      </Tabbar>
+    </div>
+  );
+};
+
+export const SafeArea: StoryObj<TabbarProps> = {
+  render: (_, { viewMode }) => <SafeAreaTabbar fullscreen={viewMode !== 'docs'} />,
+  parameters: {
+    docs: {
+      description: {
+        story: [
+          'This preview simulates Telegram CSS-variable updates using independent device and content inset switches.',
+          'The device inset starts at 34px; switch it off and on to check the 34 → 0 → 34px transition.',
+          'The official variables are --tg-safe-area-inset-bottom and --tg-content-safe-area-inset-bottom.',
+          'SDK aliases --tg-viewport-safe-area-inset-bottom and --tg-viewport-content-safe-area-inset-bottom are used when official variables are absent.',
+          'Each source is counted once. Explicit zero values are respected.',
+          'This demonstrates CSS updates; it does not emulate a native keyboard or Telegram BackButton event.',
+        ].join(' '),
       },
     },
   },
