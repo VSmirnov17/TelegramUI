@@ -31,6 +31,7 @@ try {
         react: version.react, 'react-dom': version.react,
         '@types/react': version.types, '@types/react-dom': version.domTypes,
         typescript: '5.9.3', '@types/node': '22.15.30',
+        'typescript-5-3': 'npm:typescript@5.3.3', 'react-router-dom': '6.30.6',
       },
     }, null, 2));
     npm(['install', '--no-audit', '--no-fund'], directory);
@@ -40,9 +41,10 @@ try {
       target: 'ES2020', module: 'Node16', moduleResolution: 'Node16',
       esModuleInterop: true, types: ['react', 'react-dom'],
     };
-    writeFileSync(path.join(directory, 'tsconfig.json'), JSON.stringify({ compilerOptions: options, files: ['consumer.tsx'] }));
+    writeFileSync(path.join(directory, 'tsconfig.json'), JSON.stringify({ compilerOptions: options, files: ['consumer.tsx', 'button.tsx'] }));
     const tsc = path.join(directory, 'node_modules/typescript/bin/tsc');
     run([tsc, '-p', 'tsconfig.json'], directory);
+    run([path.join(directory, 'node_modules/typescript-5-3/bin/tsc'), '-p', 'tsconfig.json'], directory);
     // Also compile the implementation against this version's types. Keeping the
     // copy inside the isolated consumer prevents root React 18 types leaking in.
     cpSync(path.join(root, 'src'), path.join(directory, 'source/src'), { recursive: true });
@@ -54,7 +56,7 @@ try {
       files: ['source/types/declarations.d.ts'],
     }));
     run([tsc, '-p', 'tsconfig.source.json'], directory);
-    console.log(`PASS ${version.name}: strict public declarations and complete source`);
+    console.log(`PASS ${version.name}: strict public declarations (TypeScript 5.3/5.9), Router Button props and complete source`);
   }
 } finally {
   rmSync(workspace, { recursive: true, force: true });

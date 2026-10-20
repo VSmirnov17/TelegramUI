@@ -6,13 +6,32 @@ import { Icon24PersonRemove } from 'icons/24/person_remove';
 import { hideControls, setControlsTypes } from 'storybook/controls';
 
 import { List, Section } from 'components';
-import { Button } from './Button';
+import { Button, ButtonProps } from './Button';
 
 const meta = {
   title: 'Blocks/Button',
   component: Button,
   parameters: {
     layout: 'centered',
+    docs: {
+      description: {
+        component: [
+          'Button renders a native button by default. Set `Component` to use another element or component; its props, events and ref follow that target.',
+          'Button still consumes its visual props, including `size` and `mode`. Custom components must forward remaining props and their ref to the intended element.',
+          'Use `ButtonProps<typeof Link>` when declaring props for a Router Link override:',
+          [
+            '```tsx',
+            'import { Link } from \'react-router-dom\';',
+            'import { Button, type ButtonProps } from \'@telegram-apps/telegram-ui\';',
+            '',
+            'const route: ButtonProps<typeof Link> = { Component: Link, to: \'/route\' };',
+            '',
+            '<Button {...route}>Open route</Button>;',
+            '```',
+          ].join('\n'),
+        ].join('\n\n'),
+      },
+    },
   },
   argTypes: {
     ...hideControls('before', 'after', 'Component'),
@@ -45,7 +64,7 @@ export const WithIcon: Story = {
   ),
 } satisfies Story;
 
-export const Link: Story = {
+export const Link: StoryObj<ButtonProps<'a'>> = {
   args: {
     size: 's',
     mode: 'filled',
@@ -54,7 +73,7 @@ export const Link: Story = {
     href: 'https://nohello.net/en/',
     Component: 'a',
   },
-} satisfies Story;
+} satisfies StoryObj<ButtonProps<'a'>>;
 
 export const BorderRadius: Story = {
   args: {
