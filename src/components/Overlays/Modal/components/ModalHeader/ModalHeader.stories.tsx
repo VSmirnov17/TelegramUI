@@ -7,6 +7,13 @@ import { ModalHeader, ModalHeaderProps } from './ModalHeader';
 const meta = {
   title: 'Overlays/Modal/Modal.Header',
   component: ModalHeader,
+  parameters: {
+    docs: {
+      source: {
+        transform: (code: string) => code.replace(/(<\/?)ModalHeader(?=[\s/>])/g, '$1Modal.Header'),
+      },
+    },
+  },
   argTypes: hideControls('children', 'before', 'after'),
 } satisfies Meta<typeof ModalHeader>;
 

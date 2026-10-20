@@ -4,13 +4,33 @@ import type { Decorator, Meta, StoryObj } from '@storybook/react';
 import { Icon28Close } from 'icons/28/close';
 import { hideControls } from 'storybook/controls';
 
-import { AppRoot, Button, List, Multiselect, Placeholder, Section, Tooltip } from 'components';
+import { AppRoot, Button, List, Multiselect, Placeholder, Section, Text, Title, Tooltip } from 'components';
 import { MultiselectOption } from 'components/Form/Multiselect/types';
 import { Modal, ModalProps } from './Modal';
 
 const meta = {
   title: 'Overlays/Modal',
   component: Modal,
+  parameters: {
+    docs: {
+      source: {
+        // Generated source should show the public aliases of the underlying dialog primitives.
+        transform: (code: string) => code
+          .replace(/(<\/?)DialogTitle(?=[\s/>])/g, '$1Modal.Title')
+          .replace(/(<\/?)DialogDescription(?=[\s/>])/g, '$1Modal.Description')
+          .replace(/(<\/?)ModalHeader(?=[\s/>])/g, '$1Modal.Header')
+          .replace(/(<\/?)ModalClose(?=[\s/>])/g, '$1Modal.Close'),
+      },
+      description: {
+        component: [
+          'Give every modal a meaningful title. Modal.Header children automatically name the dialog on both platforms;',
+          'the text is visible on iOS and visually hidden on base. For a headerless or custom-header layout, render exactly one Modal.Title instead.',
+          'Do not nest Modal.Title inside Modal.Header. Use asChild with library typography or an existing element to preserve its styling.',
+          'Modal.Description optionally connects a short description to the dialog. For a visually hidden custom title, wrap Modal.Title in VisuallyHidden.',
+        ].join(' '),
+      },
+    },
+  },
   argTypes: hideControls('header', 'trigger', 'children', 'overlayComponent', 'snapPoints', 'fadeFromIndex'),
 } satisfies Meta<typeof Modal>;
 
@@ -40,7 +60,7 @@ const DecoratorFullScreen: Decorator = (StoryComponent, { viewMode }) => (
 
 export const Playground: Story = {
   args: {
-    header: <Modal.Header>Only iOS header</Modal.Header>,
+    header: <Modal.Header>Telegram preview</Modal.Header>,
     trigger: <Button size="m">Open modal</Button>,
     children: (
       <Placeholder
@@ -81,7 +101,7 @@ export const WithCloseButton: Story = {
     ...Playground.args,
     header: (
       <Modal.Header after={<Modal.Close><Icon28Close style={{ color: 'var(--tgui--plain_foreground)' }} /></Modal.Close>}>
-        Only iOS header
+        Telegram preview
       </Modal.Header>
     ),
   },
@@ -89,6 +109,10 @@ export const WithCloseButton: Story = {
 };
 
 export const SnapPoints: Story = {
+  parameters: {
+    // Snap offsets use the window height; keep the inline Docs containing block viewport-sized.
+    docs: { story: { inline: true, height: '96vh' } },
+  },
   args: {
     ...Playground.args,
     snapPoints: [0.33, 0.66, 1],
@@ -157,11 +181,10 @@ const MultiselectInModal = ({ nested, ...props }: ModalProps) => {
     <Modal
       {...props}
       nested={nested}
-      aria-label={nested ? 'Nested platform form' : 'Platform form'}
       trigger={<Button size="m">{nested ? 'Open nested form' : 'Open platform form'}</Button>}
       header={(
         <Modal.Header after={<Modal.Close><Button size="s" mode="plain">Close</Button></Modal.Close>}>
-          Choose platforms
+          {nested ? 'Choose nested platforms' : 'Choose platforms'}
         </Modal.Header>
       )}
     >
@@ -218,9 +241,9 @@ export const WithMultiselect: Story = {
 
 export const NestedWithMultiselect: Story = {
   render: () => (
-    <Modal aria-label="Parent modal" trigger={<Button>Open parent modal</Button>}>
+    <Modal trigger={<Button>Open parent modal</Button>}>
       <Placeholder
-        header="Platform settings"
+        header={<Modal.Title asChild><span>Platform settings</span></Modal.Title>}
         description="Open the nested form to select supported platforms."
         action={<MultiselectInModal nested />}
       />
@@ -242,5 +265,20 @@ const CustomPortalExample = (props: ModalProps) => {
 
 export const MultiselectWithCustomPortal: Story = {
   render: (args) => <CustomPortalExample {...args} />,
+  decorators: [DecoratorFullScreen],
+};
+
+export const WithoutHeader: Story = {
+  render: (args) => (
+    <Modal {...args} trigger={<Button size="m">Open notification settings</Button>}>
+      <div style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <Modal.Title asChild><Title Component="h2" level="3" weight="2">Notification settings</Title></Modal.Title>
+        <Modal.Description asChild>
+          <Text Component="p">Manage notifications for this mini app.</Text>
+        </Modal.Description>
+        <Modal.Close><Button stretched>Done</Button></Modal.Close>
+      </div>
+    </Modal>
+  ),
   decorators: [DecoratorFullScreen],
 };

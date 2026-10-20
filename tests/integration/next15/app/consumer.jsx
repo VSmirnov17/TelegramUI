@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppRoot, Button, Cell, Input, Modal, Multiselect, Section } from '@telegram-apps/telegram-ui';
 
 const RefLifecycle = () => {
@@ -35,6 +35,29 @@ const RefLifecycle = () => {
   );
 };
 
+// A transformed, bounded portal reproduces the fixed containing block used by inline Docs.
+const ContainedModal = () => {
+  const portalContainer = useRef(null);
+  return (
+    <AppRoot
+      portalContainer={portalContainer}
+      data-testid="modal-focus-container"
+      style={{ height: 300, overflow: 'auto', transform: 'translateZ(0)' }}
+    >
+      <div style={{ height: 300, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Modal
+          trigger={<Button>Open contained modal</Button>}
+          header={<Modal.Header>Contained preview</Modal.Header>}
+        >
+          <div style={{ height: 160, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Modal.Close><Button>Close contained modal</Button></Modal.Close>
+          </div>
+        </Modal>
+      </div>
+    </AppRoot>
+  );
+};
+
 const Consumer = () => {
   const [hydrated, setHydrated] = useState(false);
   const [count, setCount] = useState(0);
@@ -56,6 +79,7 @@ const Consumer = () => {
           <Input aria-label="Library input" defaultValue="Library draft" />
           <Button onClick={() => setCount(count + 1)}>Count: {count}</Button>
         </Section>
+        <ContainedModal />
         <AppRoot data-testid="inherited"><span>Inherited settings</span></AppRoot>
         <AppRoot data-testid="override" platform="base" appearance="light"><span>Explicit settings</span></AppRoot>
         <Modal

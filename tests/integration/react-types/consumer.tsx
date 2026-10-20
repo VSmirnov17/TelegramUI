@@ -8,6 +8,8 @@ import '@telegram-apps/telegram-ui/dist/styles.css';
 export const Consumer = () => {
   const portal = useRef<HTMLDivElement>(null);
   const target = useRef<HTMLButtonElement>(null);
+  const modalTitle = useRef<HTMLHeadingElement>(null);
+  const modalDescription = useRef<HTMLParagraphElement>(null);
   const modal = useRef<HTMLDivElement>(null);
   const tabbar = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLInputElement>(null);
@@ -22,7 +24,10 @@ export const Consumer = () => {
       <Input ref={input} value={value} onChange={(event) => setValue(event.currentTarget.value)} />
       <button ref={target} onClick={() => setOpen(true)}>Open</button>
       <Popper targetRef={target}>Popup</Popper>
-      <Modal ref={modal} open={open} onOpenChange={setOpen}>Form</Modal>
+      <Modal ref={modal} open={open} onOpenChange={setOpen}>
+        <Modal.Title ref={modalTitle} asChild><h2>Form</h2></Modal.Title>
+        <Modal.Description ref={modalDescription}>Complete the form.</Modal.Description>
+      </Modal>
       <Multiselect value={[]} options={[{ value: 'one', label: 'One' }]} renderChip={(props) => <Chip {...props} mode="outline" />} />
       <MultiselectBase inputRef={input} chipsValue={[]} onAddChipOption={() => {}} onRemoveChipOption={() => {}} />
       <TabsList>{[<TabsList.Item key="one" selected>One</TabsList.Item>]}</TabsList>
@@ -43,3 +48,8 @@ const invalidModal = <Modal ref={createRef<SVGSVGElement>()} />;
 const invalidTarget = <Popper targetRef={{ current: 42 }} />;
 // @ts-expect-error input change handlers receive a DOM event, not a string
 const invalidChange = <Input onChange={(value: string) => value} />;
+
+// @ts-expect-error a modal title forwards an HTML heading ref
+const invalidModalTitle = <Modal.Title ref={createRef<SVGSVGElement>()}>Title</Modal.Title>;
+// @ts-expect-error a modal description forwards a paragraph ref
+const invalidModalDescription = <Modal.Description ref={createRef<SVGSVGElement>()}>Description</Modal.Description>;
