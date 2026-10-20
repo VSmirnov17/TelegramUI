@@ -4,6 +4,7 @@ const { mkdtempSync, readdirSync, rmSync } = require('node:fs');
 const { tmpdir } = require('node:os');
 const path = require('node:path');
 const { setTimeout: delay } = require('node:timers/promises');
+const verifyModalResize = require('./modal-resize.cjs');
 
 const fixture = __dirname;
 const root = path.resolve(fixture, '../../..');
@@ -209,6 +210,7 @@ async function verify(browser, mode) {
       await dialog.getByRole('button', { name: 'Done', exact: true }).click();
       await dialog.waitFor({ state: 'hidden' });
       assert.equal(await page.getByRole('button', { name: 'Open form', exact: true }).evaluate((node) => document.activeElement === node), true);
+      await verifyModalResize(page);
       // Cleanup-returning callbacks must survive the library's merged object refs.
       // Ignore React StrictMode's development mount probe and inspect actual transitions.
       await page.evaluate(() => { window.__refLifecycle = []; });
@@ -219,7 +221,7 @@ async function verify(browser, mode) {
       await page.getByRole('button', { name: 'Unmount callback refs', exact: true }).click();
       assert.deepEqual(await page.evaluate(() => [...window.__refLifecycle].sort()), ['legacy null', 'second cleaned']);
       assert.deepEqual(errors, [], 'Browser console and runtime must be error-free (including hydration warnings)');
-      console.log(`PASS Next 15 ${mode}: ${source}, SSR, preserved hydration, theme, input, click, Modal, Multiselect and callback ref cleanup`);
+      console.log(`PASS Next 15 ${mode}: ${source}, SSR, preserved hydration, theme, input, click, Modal resize, Multiselect and callback ref cleanup`);
     } catch (error) {
       console.error({ mode, source, browserErrors: errors });
       throw error;

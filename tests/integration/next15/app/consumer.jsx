@@ -83,6 +83,20 @@ const Consumer = () => {
             <Modal.Close><Button>Done</Button></Modal.Close>
           </div>
         </Modal>
+        <Modal
+          aria-label="Responsive modal"
+          aria-describedby={undefined}
+          trigger={<Button>Open responsive modal</Button>}
+          header={<Modal.Header>Resize the viewport</Modal.Header>}
+        >
+          <div style={{ padding: 16 }}>
+            <Input aria-label="Responsive draft" defaultValue="Saved draft" />
+            {Array.from({ length: 48 }, (_, index) => (
+              <p key={index}>Scrollable modal row {index + 1}</p>
+            ))}
+            <Modal.Close><Button>Finish responsive modal</Button></Modal.Close>
+          </div>
+        </Modal>
       </AppRoot>
       <RefLifecycle />
       <AppRoot data-testid="explicit" platform="ios" appearance="dark">
