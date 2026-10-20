@@ -21,6 +21,14 @@
   color: var(--tgui--text_color);
 }
 
+.input[type='date'] {
+  color-scheme: light;
+}
+
+.input--date-dark[type='date'] {
+  color-scheme: dark;
+}
+
 .input::-webkit-outer-spin-button,
 .input::-webkit-inner-spin-button {
   -webkit-appearance: none;

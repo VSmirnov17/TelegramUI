@@ -4,7 +4,7 @@ import { CSSProperties, forwardRef, InputHTMLAttributes } from 'react';
 import styles from './Input.module.css';
 
 import { classNames } from 'helpers/classNames';
-import { usePlatform } from 'hooks/usePlatform';
+import { useAppRootContext } from 'hooks/useAppRootContext';
 
 import { FormInputText } from 'components/Form/FormInput/components/FormInputText';
 import { FormInput, FormPublicProps } from 'components/Form/FormInput/FormInput';
@@ -29,7 +29,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
   rootStyle,
   ...restProps
 }, ref) => {
-  const platform = usePlatform();
+  const { platform = 'base', appearance } = useAppRootContext();
 
   return (
     <FormInput
@@ -48,7 +48,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
       <FormInputText
         ref={ref}
         Component="input"
-        className={styles.input}
+        className={classNames(
+          styles.input,
+          type === 'date' && appearance === 'dark' && styles['input--date-dark'],
+        )}
         type={type}
         disabled={disabled}
         {...restProps}
