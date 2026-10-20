@@ -6,4 +6,6 @@ Each consumer checks the public entry point, stylesheet import, the boolean `ign
 
 Button consumers also compile with TypeScript **5.3.3**. The isolated consumers install React Router DOM **6.30.6** to check the actual Link's required `to`, anchor events and refs. Native and custom components retain contextual event/ref types, required props and Button's visual props; negative cases check missing/unknown props, wrong refs and event targets. The default `ButtonProps` describes a native button; `ButtonProps<typeof Link>` describes a Router override. Router is a test dependency of these temporary consumers only.
 
+The README's font-family recipes compile under both TypeScript versions and React type sets, including the narrowly typed CSS custom property, scoped CSS-module class, native Button ref and Tooltip description relationship.
+
 The complete implementation is also copied into each isolated consumer and compiled against its React types. This catches source-only incompatibilities such as missing `useRef` initializers and element props defaulting to `unknown`. Copies prevent the repository's React 18 development types from leaking into the React 19 check. Temporary files are removed on success or failure.
