@@ -187,6 +187,10 @@ Run `npm pack` to create a release archive. Its `prepack` hook cleans `dist`, ru
 
 To check an existing build without rebuilding, run `npm run check:package`. Avoid `--ignore-scripts` when preparing a release, as it bypasses the build and verification hook.
 
+### Next 15 / React 19 runtime verification
+
+Run `npm run test:next15` to verify the packed library in an isolated Next 15 App Router consumer with React 19, in development and production. See the [fixture instructions](tests/integration/next15/README.md) for browser setup and the tested scope. The fixture is JavaScript; this runtime check does not establish React 19 TypeScript declaration compatibility.
+
 ## License
 This Telegram UI Kit is available under the [MIT License](https://opensource.org/license/mit). Use it freely in both personal and commercial projects.
 
