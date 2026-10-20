@@ -34,7 +34,7 @@ module.exports = {
     'no-multiple-empty-lines': ['error', { max: 1 }],
     'no-global-assign': 'error',
     'quotes': 'off',
-    '@typescript-eslint/quotes': ['error', 'single'],
+    '@typescript-eslint/quotes': ['error', 'single', { avoidEscape: true }],
     'jsx-quotes': ['error', 'prefer-double'],
     'react/jsx-tag-spacing': [
       'error',
@@ -64,7 +64,7 @@ module.exports = {
     'no-unsafe-negation': 'error',
     'no-empty': ['error', { allowEmptyCatch: true }],
     'indent': 'off',
-    '@typescript-eslint/indent': ['error', 2],
+    '@typescript-eslint/indent': 'off', // Prettier owns indentation, including TypeScript intersections.
     'import/order': 'off',
     'import/prefer-default-export': 'off',
     'react/function-component-definition': ['error', {
