@@ -9,6 +9,7 @@ const verifyModalFocus = require('./modal-focus.cjs');
 const verifyAppRootPalette = require('./app-root-palette.cjs');
 const { verifySegmentedControl } = require('./segmented-theme.cjs');
 const verifyTabbarLayout = require('./tabbar-layout.cjs');
+const verifyModalClose = require('./modal-close.cjs');
 
 const fixture = __dirname;
 const root = path.resolve(fixture, '../../..');
@@ -267,6 +268,7 @@ async function main() {
         await verifyAppRootPalette(browser, url, mode);
         await verifySegmentedControl(browser, url, mode);
         await verifyTabbarLayout(browser, url, mode);
+        await verifyModalClose(browser, url, mode);
       } catch (error) {
         console.error(server.output());
         throw error;

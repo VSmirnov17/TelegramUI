@@ -11,6 +11,8 @@ export const Consumer = () => {
   const modalTitle = useRef<HTMLHeadingElement>(null);
   const modalDescription = useRef<HTMLParagraphElement>(null);
   const modal = useRef<HTMLDivElement>(null);
+  const close = useRef<HTMLButtonElement>(null);
+  const closeIcon = useRef<SVGSVGElement>(null);
   const tabbar = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLInputElement>(null);
   const [value, setValue] = useState('');
@@ -28,6 +30,13 @@ export const Consumer = () => {
       <Modal ref={modal} open={open} onOpenChange={setOpen}>
         <Modal.Title ref={modalTitle} asChild><h2>Form</h2></Modal.Title>
         <Modal.Description ref={modalDescription}>Complete the form.</Modal.Description>
+        <Modal.Close ref={close} aria-label="Close form"><button type="button">Close</button></Modal.Close>
+        <Modal.Close ref={closeIcon}><svg /></Modal.Close>
+        <Modal.Close ref={(element) => {
+          element?.setAttribute('data-attached', 'true');
+          return () => element?.removeAttribute('data-attached');
+        }}><button type="button">Close with cleanup</button></Modal.Close>
+        <button type="button" onClick={() => close.current?.click()}>Close after work</button>
       </Modal>
       <Multiselect value={[]} options={[{ value: 'one', label: 'One' }]} renderChip={(props) => <Chip {...props} mode="outline" />} />
       <MultiselectBase inputRef={input} chipsValue={[]} onAddChipOption={() => {}} onRemoveChipOption={() => {}} />
@@ -54,6 +63,11 @@ const invalidChange = <Input onChange={(value: string) => value} />;
 const invalidModalTitle = <Modal.Title ref={createRef<SVGSVGElement>()}>Title</Modal.Title>;
 // @ts-expect-error a modal description forwards a paragraph ref
 const invalidModalDescription = <Modal.Description ref={createRef<SVGSVGElement>()}>Description</Modal.Description>;
+
+// @ts-expect-error a close trigger ref must refer to a DOM element
+const invalidCloseRef = <Modal.Close ref={createRef<number>()}><button>Close</button></Modal.Close>;
+// @ts-expect-error an arbitrary slotted element is not always a native button
+const invalidCloseButtonAssumption = <Modal.Close ref={(element) => { if (element) element.disabled = true; }}><svg /></Modal.Close>;
 
 // @ts-expect-error the Telegram palette option must be boolean
 const invalidTelegramTheme = <AppRoot ignoreTelegramTheme="true" />;
