@@ -49,6 +49,7 @@ const ThemePreview = ({ initialPalette = 'Inherited', opposingPalette = false, .
   const [palette, setPalette] = useState<Palette>(initialPalette);
   const [view, setView] = useState('Week');
   const [ignoreTelegramTheme, setIgnoreTelegramTheme] = useState(true);
+  const inactivePaletteMode = opposingPalette ? 'plain' : 'gray';
   const requestedAppearance = props.appearance === 'dark' ? 'dark' : 'light';
   const oppositeAppearance = requestedAppearance === 'dark' ? 'light' : 'dark';
   const incomingAppearance = opposingPalette ? oppositeAppearance : requestedAppearance;
@@ -82,7 +83,7 @@ const ThemePreview = ({ initialPalette = 'Inherited', opposingPalette = false, .
             <Button
               size="s"
               aria-pressed={ignoreTelegramTheme}
-              mode={ignoreTelegramTheme ? 'filled' : 'gray'}
+              mode="filled"
               onClick={() => setIgnoreTelegramTheme(!ignoreTelegramTheme)}
               style={{ marginBottom: 8 }}
             >
@@ -94,7 +95,7 @@ const ThemePreview = ({ initialPalette = 'Inherited', opposingPalette = false, .
               <Button
                 key={name}
                 size="s"
-                mode={palette === name ? 'filled' : 'gray'}
+                mode={palette === name ? 'filled' : inactivePaletteMode}
                 aria-pressed={palette === name}
                 onClick={() => setPalette(name)}
               >
