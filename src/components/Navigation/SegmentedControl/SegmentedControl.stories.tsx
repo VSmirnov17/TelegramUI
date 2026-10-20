@@ -20,7 +20,7 @@ const meta = {
           'Automatic detection starts with base/light during server rendering and hydration, then updates on the client.',
           'If your server already knows the appearance, pass the same value on the server and client.',
           'The track and selected segment use the AppRoot surface tokens, which follow Telegram CSS colors when available.',
-          'To force a library palette regardless of Telegram colors, use `<AppRoot appearance="dark" ignoreTelegramTheme>`.',
+          'To force a library palette regardless of Telegram colors, set `appearance="dark"` and `ignoreTelegramTheme` on `AppRoot`.',
         ].join(' '),
       },
     },
