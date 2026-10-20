@@ -47,6 +47,10 @@
   overflow: hidden;
 }
 
+.wrapper:not(.wrapper--horizontal) > .fields {
+  overflow-wrap: anywhere;
+}
+
 .title {
   display: inline-block;
   margin-bottom: 4px;
