@@ -41,7 +41,7 @@ try {
       target: 'ES2020', module: 'Node16', moduleResolution: 'Node16',
       esModuleInterop: true, types: ['react', 'react-dom'],
     };
-    writeFileSync(path.join(directory, 'tsconfig.json'), JSON.stringify({ compilerOptions: options, files: ['consumer.tsx', 'button.tsx', 'font-family.tsx'] }));
+    writeFileSync(path.join(directory, 'tsconfig.json'), JSON.stringify({ compilerOptions: options, files: ['consumer.tsx', 'button.tsx', 'font-family.tsx', 'date-input.tsx'] }));
     const tsc = path.join(directory, 'node_modules/typescript/bin/tsc');
     run([tsc, '-p', 'tsconfig.json'], directory);
     run([path.join(directory, 'node_modules/typescript-5-3/bin/tsc'), '-p', 'tsconfig.json'], directory);
